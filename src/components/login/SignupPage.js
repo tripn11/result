@@ -11,39 +11,42 @@ import { setAuthState } from '../../reducers/authReducer';
 export default ()=> {
     const [school,setSchool] = useState({name:'',email:'',password:''})
     const [showPassword, setShowPassword] = useState(false)
-    const [errors, setErrors] = useState({})
+    const [error, setError] = useState({})
     const [loading,setLoading] = useState(false)
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const host = process.env.REACT_APP_HOST
 
 
+    
     const inputHandler = e => {
         const { name, value } = e.target;
         setSchool({ ...school, [name]: value });
-        setErrors('')
+        setError({})
     };
 
     const toggleVisibility = () => {
         setShowPassword(prev=>!prev)
     }
 
+
     const formHandler = async e => {
         e.preventDefault()
 
         try {
             setLoading(true)
-            const schoolDetails = await axios.post('http://localhost:5000/schools', school)
-            dispatch(setBasics(schoolDetails.school))
-            dispatch(setAuthState({auth:true,code:schoolDetails.token,type:'admin'}))
+            const schoolDetails = await axios.post(host+'/schools', school)
+            dispatch(setBasics(schoolDetails.data.school))
+            dispatch(setAuthState({token:schoolDetails.data.token,type:'admin'}))
             setLoading(false)
             navigate("/admin", { replace: true })//replace to prevent the user from going back into the signup page
         } catch (e) {
             setLoading(false)
-            if (e.response && e.response.data.errors) {
-                setErrors(e.response.data.errors);
+            if (e.response && e.response.data.error) {
+                setError(e.response.data.error);
                 return 
             } else {
-                setErrors(e)
+                setError(e.message)
             }
         }
     }
@@ -52,10 +55,15 @@ export default ()=> {
         return <Circles />
     }
 
+    if(error.message) {
+        return(<div>{error.message}</div>)
+    }
+
     return (
         <div>
             <form onSubmit={formHandler}>
                 <h2>Sign Up</h2>
+                {error.duplicate && <p>{error.duplicate}</p>}
                 <label htmlFor='name'>Full Name of School</label>
                 <input 
                     value={school.name}
@@ -71,7 +79,7 @@ export default ()=> {
                     type='email'
                     required
                 />
-                {errors.email && <p>{errors.email}</p>}
+                {error.email && <p>{error.email}</p>}
                 <label htmlFor='password'>Password</label>
                 <input 
                     value={school.password}
@@ -80,8 +88,8 @@ export default ()=> {
                     type={showPassword?'text':'password'}
                     required
                 />
-                {(errors.password && !errors.email) && <p>{errors.password}</p>}
                 <button type="button" onClick={toggleVisibility}>{showPassword?'--':'oo'}</button>
+                {(error.password && !error.email) && <p>{error.password}</p>}
                 <button type='submit'>Sign up</button>
             </form>
             <p>Already have an account? <Link to='/login'>Login</Link></p>

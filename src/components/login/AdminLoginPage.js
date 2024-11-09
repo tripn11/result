@@ -13,6 +13,7 @@ export default () => {
     const [error, setError] = useState('')
     const [loading,setLoading] = useState(false)
     const dispatch = useDispatch();
+    const host = process.env.REACT_APP_HOST
 
     const inputHandler = e => {
         const { name, value } = e.target;
@@ -24,13 +25,17 @@ export default () => {
         e.preventDefault()
         try{
            setLoading(true)
-           const schoolDetails =  await axios.post('http://localhost:5000/schools/login',loginDetails)
-           dispatch(setBasics(schoolDetails))
-           dispatch(setAuthState({auth:true,code:schoolDetails.token,type:'admin'}))
+           const schoolDetails =  await axios.post(host+'/schools/login',loginDetails)
+           dispatch(setBasics(schoolDetails.data.school))
+           dispatch(setAuthState({token:schoolDetails.data.token,type:'admin'}))
            setLoading(false)
         }catch (error) {
             setLoading(false)
-            setError(error.response.data)
+            if(error.response) {
+                setError(error.response.data)
+            }else {
+                setError(error.message)
+            }
         }
     }
 

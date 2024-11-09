@@ -8,19 +8,20 @@ export default ()=>{
         const role = e.target.textContent.toLowerCase()
         if(role==='admin') {
             navigate('/login')
+        }else if(role==='input result'){
+            navigate("/login/teacher")
         }else {
-            navigate("/login/"+role)
+            navigate("/login/student")
         }
     }
 
     return (
         <div>
-            <h1>Hello, Welcome Champ</h1>
-            <h2>I am Result, Who are you?</h2>
+            <h1>Hello Champ, Welcome to ResultHub</h1>
+            <h2>How can I help you?</h2>
+            <button onClick={logger}>Check Result</button>
+            <button onClick={logger}>Input Result</button>
             <button onClick={logger}>Admin</button>
-            <button onClick={logger}>Teacher</button>
-            <button onClick={logger}>Parent</button>
-            <button onClick={logger}>Student</button>
         </div>
     )
 }

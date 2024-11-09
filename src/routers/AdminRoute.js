@@ -4,6 +4,6 @@ import { Navigate, Outlet } from 'react-router-dom';
 
 
 export default () => {
-    const authType = useSelector(state=>state.auth.type)
-    return authType!=='admin'?<Navigate to='/teacher' />:<Outlet />
+    const isAdmin = useSelector(state=>state.auth.type==='admin')
+    return isAdmin ? <Outlet />: <Navigate to='/teacher' />
 }

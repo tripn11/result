@@ -1,8 +1,13 @@
 import React, {useState} from 'react';
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import axios from "axios";
+import { logout } from '../../reducers/authReducer.js';
 
 export default () => {
     const schoolDetails = useSelector(state=>state.school)
+    const token = useSelector(state=>state.auth.token)
+    const dispatch = useDispatch()
+    const host = process.env.REACT_APP_HOST
     const [schoolData, setSchoolData] = useState({
         phoneNumber:schoolDetails.phoneNumber,
         address:schoolDetails.address,
@@ -30,9 +35,20 @@ export default () => {
         }
         delete finalSchoolData.currentTerm
         delete finalSchoolData.session
-        delete finalSchoolData.totalTimesSchoolOpened 
-        
-        
+        delete finalSchoolData.totalTimesSchoolOpened    
+    }
+
+    const logger = async()=>{
+        try{
+            await axios.post(host+'/schools/logout',null, {
+                headers: {
+                    Authorization:'Bearer '+ token
+                }
+            }) 
+            dispatch(logout())
+        }catch (e) {
+            console.log(e)
+        }
     }
 
     return (
@@ -85,6 +101,8 @@ export default () => {
 
                 <button type='submit'> Save </button>
             </form>
+            <button type='button' onClick={logger}> Logout </button>
+
         </div>
     )
 }
