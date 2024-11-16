@@ -51,15 +51,11 @@ export default ()=> {
         }
     }
 
-    if(loading) {
-        return <Circles />
-    }
-
     if(error.message) {
         return(<div>{error.message}</div>)
     }
 
-    return (
+    return loading?<Circles />:(
         <div>
             <form onSubmit={formHandler}>
                 <h2>Sign Up</h2>
