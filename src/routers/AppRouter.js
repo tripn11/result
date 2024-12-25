@@ -12,6 +12,7 @@ import Header from "../components/admin/Header";
 import Basics from "../components/admin/Basics";
 import Classes from "../components/admin/classes/Classes";
 import Section from "../components/admin/classes/Section";
+import Students from "../components/admin/students/Students";
 
 export default () => {
     const classes = useSelector(state=>state.school.classes)
@@ -33,8 +34,13 @@ export default () => {
                             <Route path="jss" element={<Section section={classes.juniorSecondary} name='juniorSecondary'/>} />
                             <Route path="ss" element={<Section section={classes.seniorSecondary} name='seniorSecondary' />} />
                         </Route>
-                        {/* <Route path="students" element={<Students />} />
-                        <Route path="results" element={<Results />} /> */}
+                        <Route path="students" element={<Students />}>
+                            <Route index element={<Section section={classes.nursery} name='nursery' />} />
+                            <Route path="primary" element={<Section section={classes.primary} name='primary' />} />
+                            <Route path="jss" element={<Section section={classes.juniorSecondary} name='juniorSecondary'/>} />
+                            <Route path="ss" element={<Section section={classes.seniorSecondary} name='seniorSecondary' />} />
+                        </Route>
+                        {/* <Route path="results" element={<Results />} /> */}
                     </Route>
                 </Route>
                 <Route path='/*' element={ <NotFoundPage /> } />
