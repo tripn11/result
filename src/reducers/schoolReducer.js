@@ -30,7 +30,7 @@ const initialState = {
         }
     },
     termInfo:{
-        totalTimesSchoolOpened:'',
+        totalTimesSchoolOpened:0,
         currentSession:'',
         currentTerm:''
     },
@@ -41,14 +41,19 @@ const schoolSlice = createSlice({
     name:'school',
     initialState,
     reducers: {
+        setInitialSchool(state, action) {
+            Object.assign(state, action.payload)
+        },
         setBasics(state,action) {
-            Object.assign(state,action.payload)
+            state={...state,...action.payload}
+        },
+        setClasses(state,action) {
+            const {section,category, update} = action.payload
+            const updatedSection = state.classes[section]
+            updatedSection[category] = [...update]
         }
-        // setClasses(state,action) {
-
-        // }
     }
 })
 
-export const { setBasics } = schoolSlice.actions;
+export const {setInitialSchool, setBasics, setClasses} = schoolSlice.actions;
 export default schoolSlice.reducer;

@@ -1,14 +1,17 @@
-import React, {useState} from 'react';
-import { useSelector, useDispatch } from 'react-redux'
+import React, {useState, useEffect} from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import axios from "axios";
 import { logout } from '../../reducers/authReducer.js';
 import { setBasics } from '../../reducers/schoolReducer.js';
-import { Circles } from "react-loader-spinner";
-import Modal from 'react-modal';
+import { setAuthState } from '../../reducers/authReducer.js';
+import Loading from '../Loading.js';
+import SuccessModal from '../SuccessModal.js';
+import ErrorModal from '../ErrorModal.js';
 
 export default () => {
     const schoolDetails = useSelector(state=>state.school)
     const token = useSelector(state=>state.auth.token)
+    const isModified = useSelector(state=>state.auth.basicsIsModified)
     const dispatch = useDispatch()
     const host = process.env.REACT_APP_HOST
     const [loading,setLoading] = useState(false)
@@ -25,9 +28,23 @@ export default () => {
     })
 
 
+    useEffect(()=>{
+        const beforeExit = e => {
+            if(isModified) {
+                e.preventDefault()
+                e.returnValue=""
+            }
+        }
+        window.addEventListener("beforeunload",beforeExit)
+        return () => {
+            window.removeEventListener("beforeunload",beforeExit)
+        }
+    }, [isModified])
+
     const inputHandler = e => {
         const { name, value } = e.target;
         setSchoolData({ ...schoolData, [name]: value });
+        dispatch(setAuthState({basicsIsModified:true})) 
     };
 
     const schoolDetailSaver = async e => {
@@ -47,15 +64,16 @@ export default () => {
         
         try {
             setLoading(true)
+            dispatch(setBasics(finalSchoolData))
             await axios.patch(host+'/schools',finalSchoolData, {
                 headers: {
                     Authorization:'Bearer '+ token
                 }
             })
-            dispatch(setBasics(finalSchoolData))
             setLoading(false)
             setSuccessModal(true)
             setTimeout(()=>setSuccessModal(false),1500)
+            dispatch(setAuthState({basicsIsModified:false}))
         } catch (e) {
             setLoading(false)
             setErrorModal(true)
@@ -82,8 +100,7 @@ export default () => {
         }
     }
 
-
-    return loading?<Circles />:(
+    return loading?<Loading />:(
         <div>
             <form onSubmit={schoolDetailSaver}>
                 <label htmlFor='phone-number'>Phone Number</label>
@@ -129,23 +146,16 @@ export default () => {
                     type='number'
                     name='totalTimesSchoolOpened'
                 />
+                <SuccessModal status={successModal} />
+                <ErrorModal status={errorModal} error={error} closer={()=>setErrorModal(false)}/>
 
-                <Modal isOpen={successModal}>
-                    <p>v</p>
-                    <p>saved</p>
-                </Modal>
-
-                <Modal
-                    isOpen={errorModal}
-                    onRequestClose={()=>setErrorModal(false)}
-                >
-                    <p>{error}</p>
-                </Modal>
-
-                <button type='submit'> Save </button>
+                <button type='submit' disabled={!isModified} > Save </button>
             </form>
             <button type='button' onClick={logger}> Logout </button>
 
         </div>
     )
 }
+
+
+//need to ensure the user is warned to save when moving from one component to another

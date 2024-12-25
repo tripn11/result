@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { useDispatch } from 'react-redux';
 import { Circles } from "react-loader-spinner";
-import { setBasics } from '../../reducers/schoolReducer';
+import { setInitialSchool } from '../../reducers/schoolReducer';
 import { setAuthState } from '../../reducers/authReducer';
 
 
@@ -36,7 +36,7 @@ export default ()=> {
         try {
             setLoading(true)
             const schoolDetails = await axios.post(host+'/schools', school)
-            dispatch(setBasics(schoolDetails.data.school))
+            dispatch(setInitialSchool(schoolDetails.data.school))
             dispatch(setAuthState({token:schoolDetails.data.token,type:'admin'}))
             setLoading(false)
             navigate("/admin", { replace: true })//replace to prevent the user from going back into the signup page

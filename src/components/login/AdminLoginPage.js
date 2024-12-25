@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from 'react-redux';
-import { setBasics } from '../../reducers/schoolReducer';
+import { setInitialSchool } from '../../reducers/schoolReducer';
 import { setAuthState } from "../../reducers/authReducer";
 import { Circles } from "react-loader-spinner";
 
@@ -26,7 +26,7 @@ export default () => {
         try{
            setLoading(true)
            const schoolDetails =  await axios.post(host+'/schools/login',loginDetails)
-           dispatch(setBasics(schoolDetails.data.school))
+           dispatch(setInitialSchool(schoolDetails.data.school))
            dispatch(setAuthState({token:schoolDetails.data.token,type:'admin'}))
            setLoading(false)
         }catch (error) {
