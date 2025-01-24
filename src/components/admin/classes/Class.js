@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import { codeGenerator } from "../../../codeGenerator"; 
 
 export default props => {
     const [eachClass, setEachClass] = useState({
@@ -18,6 +19,11 @@ export default props => {
 
     const remover = () => {
         props.remover('classes',eachClass.code)
+    }
+
+    const codeChanger = () => {
+        const code = codeGenerator(7)
+        setEachClass({...eachClass,code})
     }
    
     return (
@@ -39,6 +45,12 @@ export default props => {
                 name='teachersName'
                 onBlur={updater}
             />
+            <input 
+                value={eachClass.code+"-"+eachClass.class}
+                name='code'
+                onBlur={updater}
+            />
+            <button onClick={codeChanger}>Change Code</button>
             <button onClick={remover}>x</button>
         </div>
     )

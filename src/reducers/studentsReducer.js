@@ -1,16 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = [];
+const initialState = {
+    totalStudents:0
+};
 
 const studentsSlice = createSlice({
     name:'students',
     initialState,
     reducers:{
-        setStudents(state,action) {
-            state=[...action.payload]
+        setTotalStudents(state,action) {
+            state={totalStudents:action.payload}
         }
     }
 })
 
-export const {setStudents} = studentsSlice.actions;
+export const {setTotalStudents} = studentsSlice.actions;
 export default studentsSlice.reducer;

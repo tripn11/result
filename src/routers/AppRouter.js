@@ -13,6 +13,7 @@ import Basics from "../components/admin/Basics";
 import Classes from "../components/admin/classes/Classes";
 import Section from "../components/admin/classes/Section";
 import Students from "../components/admin/students/Students";
+import StudentsSection from "../components/admin/students/Section";
 
 export default () => {
     const classes = useSelector(state=>state.school.classes)
@@ -35,10 +36,10 @@ export default () => {
                             <Route path="ss" element={<Section section={classes.seniorSecondary} name='seniorSecondary' />} />
                         </Route>
                         <Route path="students" element={<Students />}>
-                            <Route index element={<Section section={classes.nursery} name='nursery' />} />
-                            <Route path="primary" element={<Section section={classes.primary} name='primary' />} />
-                            <Route path="jss" element={<Section section={classes.juniorSecondary} name='juniorSecondary'/>} />
-                            <Route path="ss" element={<Section section={classes.seniorSecondary} name='seniorSecondary' />} />
+                            <Route index element={<StudentsSection classes={classes.nursery.classes} name='nursery' />} />
+                            <Route path="primary" element={<StudentsSection classes={classes.primary.classes} name='primary' />} />
+                            <Route path="jss" element={<StudentsSection classes={classes.juniorSecondary.classes} name='juniorSecondary'/>} />
+                            <Route path="ss" element={<StudentsSection classes={classes.seniorSecondary.classes} name='seniorSecondary' />} />
                         </Route>
                         {/* <Route path="results" element={<Results />} /> */}
                     </Route>
