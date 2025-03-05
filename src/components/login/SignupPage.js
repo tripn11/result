@@ -2,9 +2,9 @@ import React,{useState} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { useDispatch } from 'react-redux';
-import { Circles } from "react-loader-spinner";
 import { setInitialSchool } from '../../reducers/schoolReducer';
 import { setAuthState } from '../../reducers/authReducer';
+import Loading from '../Loading';
 
 
 
@@ -42,53 +42,50 @@ export default ()=> {
             navigate("/admin", { replace: true })//replace to prevent the user from going back into the signup page
         } catch (e) {
             setLoading(false)
-            if (e.response && e.response.data.error) {
-                setError(e.response.data.error);
-                return 
-            } else {
-                setError(e.message)
-            }
+            setError(e.response?.data?.error || {message:e.message})
         }
     }
 
     if(error.message) {
-        return(<div>{error.message}</div>)
+        return <div>{error.message}</div>
+    } else if(loading) {
+        return <Loading />
+    }else {
+        return (
+            <div>
+                <form onSubmit={formHandler}>
+                    <h2>Sign Up</h2>
+                    {error.duplicate && <p>{error.duplicate}</p>}
+                    <label htmlFor='name'>Full Name of School</label>
+                    <input 
+                        value={school.name}
+                        onChange={inputHandler}
+                        name='name'
+                        required
+                    />
+                    <label htmlFor='email'>Email</label>
+                    <input 
+                        value={school.email}
+                        onChange={inputHandler}
+                        name='email'
+                        type='email'
+                        required
+                    />
+                    {error.email && <p>{error.email}</p>}
+                    <label htmlFor='password'>Password</label>
+                    <input 
+                        value={school.password}
+                        onChange={inputHandler}
+                        name='password'
+                        type={showPassword?'text':'password'}
+                        required
+                    />
+                    <button type="button" onClick={toggleVisibility}>{showPassword?'--':'oo'}</button>
+                    {(error.password && !error.email) && <p>{error.password}</p>}
+                    <button type='submit'>Sign up</button>
+                </form>
+                <p>Already have an account? <Link to='/login'>Login</Link></p>
+            </div>
+        )
     }
-
-    return loading?<Circles />:(
-        <div>
-            <form onSubmit={formHandler}>
-                <h2>Sign Up</h2>
-                {error.duplicate && <p>{error.duplicate}</p>}
-                <label htmlFor='name'>Full Name of School</label>
-                <input 
-                    value={school.name}
-                    onChange={inputHandler}
-                    name='name'
-                    required
-                />
-                <label htmlFor='email'>Email</label>
-                <input 
-                    value={school.email}
-                    onChange={inputHandler}
-                    name='email'
-                    type='email'
-                    required
-                />
-                {error.email && <p>{error.email}</p>}
-                <label htmlFor='password'>Password</label>
-                <input 
-                    value={school.password}
-                    onChange={inputHandler}
-                    name='password'
-                    type={showPassword?'text':'password'}
-                    required
-                />
-                <button type="button" onClick={toggleVisibility}>{showPassword?'--':'oo'}</button>
-                {(error.password && !error.email) && <p>{error.password}</p>}
-                <button type='submit'>Sign up</button>
-            </form>
-            <p>Already have an account? <Link to='/login'>Login</Link></p>
-        </div>
-    )
 }

@@ -4,8 +4,7 @@ import axios from "axios";
 import { useDispatch } from 'react-redux';
 import { setInitialSchool } from '../../reducers/schoolReducer';
 import { setAuthState } from "../../reducers/authReducer";
-import { Circles } from "react-loader-spinner";
-
+import Loading from "../Loading";
 
 export default () => {
     const [loginDetails, setLoginDetails] = useState({email:'',password:''})
@@ -28,23 +27,15 @@ export default () => {
            const schoolDetails =  await axios.post(host+'/schools/login',loginDetails)
            dispatch(setInitialSchool(schoolDetails.data.school))
            dispatch(setAuthState({token:schoolDetails.data.token,type:'admin'}))
-           setLoading(false)
         }catch (error) {
+            setError(error.response?.data || error.message)
+        }finally{
             setLoading(false)
-            if(error.response) {
-                setError(error.response.data)
-            }else {
-                setError(error.message)
-            }
         }
     }
 
 
-    if(loading) {
-        return <Circles />
-    }
-
-    return (
+    return loading?<Loading />:(
         <div>
             <form onSubmit={formHandler}>
                 <h2>Login as Admin</h2>

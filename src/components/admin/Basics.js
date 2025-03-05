@@ -59,7 +59,7 @@ export default () => {
             }
         }
         delete finalSchoolData.currentTerm
-        delete finalSchoolData.session
+        delete finalSchoolData.currentSession
         delete finalSchoolData.totalTimesSchoolOpened  
         
         try {
@@ -93,10 +93,11 @@ export default () => {
                     Authorization:'Bearer '+ token
                 }
             }) 
-            setLoading(false)
             dispatch(logout())
         }catch (e) {
             console.log(e)
+        } finally {
+            setLoading(false)
         }
     }
 

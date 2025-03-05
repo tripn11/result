@@ -1,14 +1,13 @@
-import React, {useEffect,useState} from "react";
+import React, {useEffect} from "react";
 import { NavLink, Outlet } from "react-router-dom"; 
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { setTotalStudents } from "../../../reducers/studentsReducer";
+import { setTotalStudentsInSchool } from "../../../reducers/studentsReducer";
 
 export default () => {
     const host = process.env.REACT_APP_HOST
     const token = useSelector(state=>state.auth.token)
-    const [totalStudents, setTotStudents] = useState(0)
-    const students = useSelector(state=>state.students.totalStudents)
+    const totalStudentsInSchool = useSelector(state=>state.students.totalStudentsInSchool)
     const dispatch = useDispatch()
     
     useEffect(()=>{
@@ -19,14 +18,13 @@ export default () => {
                         Authorization:'Bearer '+ token
                     }
                 })
-                setTotStudents(total.data.number)
-                dispatch(setTotalStudents(total.data.number))
+                dispatch(setTotalStudentsInSchool(total.data.number))
             } catch (e) {
                 console.log(e)
             }
         }
         getTotalNumberOfStudents()
-    },[students])
+    },[totalStudentsInSchool])
 
     return (
         <div>
@@ -36,7 +34,7 @@ export default () => {
                 <NavLink to="/admin/students/jss">Junior Sec</NavLink>
                 <NavLink to="/admin/students/ss">Senior Sec</NavLink>            
             </div>
-            <div>Total number of students:{totalStudents}</div>
+            <div>Total number of students:{totalStudentsInSchool}</div>
             <Outlet />
         </div>
     )

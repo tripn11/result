@@ -45,7 +45,7 @@ const schoolSlice = createSlice({
             Object.assign(state, action.payload)
         },
         setBasics(state,action) {
-            state={...state,...action.payload}
+            Object.assign(state, action.payload)
         },
         setClasses(state,action) {
             const {section,category, update} = action.payload

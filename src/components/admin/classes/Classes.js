@@ -47,11 +47,7 @@ export default () => {
         }catch (e) {
             setLoading(false)
             setErrorModal(true)
-            if(e.response && e.response.data) {
-                setError(e.response.data)
-            }else {
-                setError(e.message)
-            }
+            setError(e.response?.data || e.message)
         }
     }
 
