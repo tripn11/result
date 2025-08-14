@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import Class from "./ClassList.js";
 import { setStudentsInSection } from "../../../reducers/studentsReducer.js";
 
-export default props=> {
+const Section =  props=> {
     const host = process.env.REACT_APP_HOST
     const token = useSelector(state=>state.auth.token)
     const studentsInSection = useSelector(state=>state.students.studentsInSection)
@@ -42,14 +42,13 @@ export default props=> {
         });
     }, [studentsInSection])
 
-
-
-
     return (
         <div>
             <div>Total Number of students in {props.name} section is : {studentsInSection.length}</div>
             {classes.map((eachClass,index) => <Class key={index} eachClass={eachClass} 
-                students={studentsInClass[eachClass] || []} />)}
+                students={studentsInClass[eachClass] || []} classes={classes} />)}
         </div>
     )
 }
+
+export default Section;

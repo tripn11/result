@@ -1,4 +1,3 @@
-import React from "react";
 import { useSelector } from "react-redux";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PublicRoute from "./PublicRoute";
@@ -16,7 +15,7 @@ import Students from "../components/admin/students/Students";
 import StudentsSection from "../components/admin/students/Section";
 import Results from "../components/admin/Result";
 
-export default () => {
+const AppRouter = () => {
     const classes = useSelector(state=>state.school.classes)
     return (
         <BrowserRouter>
@@ -43,7 +42,7 @@ export default () => {
                             <Route path="ss" element={<StudentsSection classes={classes.seniorSecondary.classes} name='seniorSecondary' />} />
                         </Route>
                         <Route path="results" element={<Results />} />
-                     </Route>
+                    </Route>
                 </Route>
                 <Route path='/*' element={ <NotFoundPage /> } />
             </Routes>
@@ -51,4 +50,4 @@ export default () => {
     )   
 }
     
-    
+export default AppRouter;    

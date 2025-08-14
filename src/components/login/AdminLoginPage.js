@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from 'react-redux';
@@ -6,7 +6,7 @@ import { setInitialSchool } from '../../reducers/schoolReducer';
 import { setAuthState } from "../../reducers/authReducer";
 import Loading from "../Loading";
 
-export default () => {
+const AdminLoginPage = () => {
     const [loginDetails, setLoginDetails] = useState({email:'',password:''})
     const [showPassword, setShowPassword] = useState(false)
     const [error, setError] = useState('')
@@ -68,3 +68,5 @@ export default () => {
         
     )
 }
+
+export default AdminLoginPage;

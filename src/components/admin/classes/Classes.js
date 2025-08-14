@@ -1,13 +1,13 @@
-import React, {useState, useEffect} from "react";
+import {useState, useEffect} from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import Loading from "../../Loading.js";
-import SuccessModal from "../../SuccessModal.js";
-import ErrorModal from "../../ErrorModal.js";
+import SuccessModal from "../modals/SuccessModal.js";
+import ErrorModal from "../modals/ErrorModal.js";
 import { setAuthState } from "../../../reducers/authReducer.js";
 
-export default () => {
+const Classes = () => {
     const [loading,setLoading] = useState(false)
     const token = useSelector(state=>state.auth.token)
     const classes = useSelector(state=>state.school.classes)
@@ -66,3 +66,5 @@ export default () => {
         </div>
     )
 }
+
+export default Classes;

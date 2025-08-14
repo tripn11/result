@@ -1,14 +1,12 @@
-import React from "react";
 import { useDispatch} from "react-redux";
 import Class from "./Class";
 import Grade from "./Grade";
 import { setClasses } from "../../../reducers/schoolReducer";
 import { setAuthState } from "../../../reducers/authReducer.js";
-import {codeGenerator} from "../../../codeGenerator.js";
-
+import codeGenerator from "../../../utilities/codeGenerator.js";
 import Subject from "./Subjects.js";
 
-export default props => {
+const Section = props => {
     const dispatch = useDispatch();
     
     const examGrader = () => {
@@ -121,3 +119,4 @@ export default props => {
     )
 }
 
+export default Section;

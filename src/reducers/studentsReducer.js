@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
     totalStudentsInSchool:0,
-    studentsInSection:[]
+    studentsInSection:[],
 };
 
 const studentsSlice = createSlice({
@@ -32,7 +32,7 @@ const studentsSlice = createSlice({
         removeStudentFromSection(state,action) {
             const studentIndex = state.studentsInSection.findIndex(each=>each._id===action.payload);
             state.studentsInSection.splice(studentIndex,1)
-        }
+        },
     }
 })
 

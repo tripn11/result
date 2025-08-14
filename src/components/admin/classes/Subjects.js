@@ -1,6 +1,6 @@
-import React,{useState, useEffect} from 'react';
+import {useState, useEffect} from 'react';
 
-export default props => {
+const Subjects = props => {
     const [subject,code] = props.subject.split("-")
     const [subj, setSubj]= useState(subject)
 
@@ -31,3 +31,5 @@ export default props => {
         </div>
     )
 }
+
+export default Subjects;

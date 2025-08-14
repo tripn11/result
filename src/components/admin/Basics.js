@@ -1,14 +1,15 @@
-import React, {useState, useEffect} from 'react';
+import {useState, useEffect} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from "axios";
 import { logout } from '../../reducers/authReducer.js';
 import { setBasics } from '../../reducers/schoolReducer.js';
 import { setAuthState } from '../../reducers/authReducer.js';
 import Loading from '../Loading.js';
-import SuccessModal from '../SuccessModal.js';
-import ErrorModal from '../ErrorModal.js';
+import SuccessModal from './modals/SuccessModal.js';
+import ErrorModal from './modals/ErrorModal.js';
+import WarningModal from './modals/WarningModal.js';
 
-export default () => {
+const Basics = () => {
     const schoolDetails = useSelector(state=>state.school)
     const token = useSelector(state=>state.auth.token)
     const isModified = useSelector(state=>state.auth.basicsIsModified)
@@ -16,8 +17,10 @@ export default () => {
     const host = process.env.REACT_APP_HOST
     const [loading,setLoading] = useState(false)
     const [successModal, setSuccessModal]= useState(false)
-    const [errorModal, setErrorModal] = useState(false)
     const [error, setError] = useState('')
+    const [sessionWarning, setSessionWarning] = useState(false);
+    const [pendingSession, setPendingSession] = useState('');
+    const currentYear = new Date().getFullYear()
     const [schoolData, setSchoolData] = useState({
         phoneNumber:schoolDetails.phoneNumber,
         address:schoolDetails.address,
@@ -26,7 +29,6 @@ export default () => {
         currentSession:schoolDetails.termInfo.currentSession,
         totalTimesSchoolOpened:schoolDetails.termInfo.totalTimesSchoolOpened
     })
-
 
     useEffect(()=>{
         const beforeExit = e => {
@@ -43,8 +45,13 @@ export default () => {
 
     const inputHandler = e => {
         const { name, value } = e.target;
-        setSchoolData({ ...schoolData, [name]: value });
-        dispatch(setAuthState({basicsIsModified:true})) 
+        if (name === 'currentSession' && value !== schoolData.currentSession) {
+            setPendingSession(value);
+            setSessionWarning(true);
+        } else {
+            setSchoolData({ ...schoolData, [name]: value });
+            dispatch(setAuthState({ basicsIsModified: true }));
+        }
     };
 
     const schoolDetailSaver = async e => {
@@ -76,7 +83,6 @@ export default () => {
             dispatch(setAuthState({basicsIsModified:false}))
         } catch (e) {
             setLoading(false)
-            setErrorModal(true)
             if(e.response && e.response.data) {
                 setError(e.response.data)
             }else {
@@ -100,6 +106,19 @@ export default () => {
             setLoading(false)
         }
     }
+
+    const confirmSessionChange = () => {
+        setSchoolData({ ...schoolData, currentSession: pendingSession });
+        dispatch(setAuthState({ basicsIsModified: true }));
+        setSessionWarning(false);
+        setPendingSession('');
+    };
+
+    const cancelSessionChange = () => {
+        setPendingSession('');
+        setSessionWarning(false);
+    };
+
 
     return loading?<Loading />:(
         <div>
@@ -132,13 +151,15 @@ export default () => {
                     <option value='third'>Third</option>
                 </select>
 
-                <label htmlFor='session'>Session</label>
-                <input 
+                <label htmlFor='currentSession'>Current Academic Session</label>
+                <select
                     value={schoolData.currentSession}
                     onChange={inputHandler}
                     name='currentSession'
-                    placeholder='20XX/20XX'
-                />
+                >
+                    <option value={`${currentYear-1}/${currentYear}`}>{currentYear-1}/{currentYear}</option>
+                    <option value={`${currentYear}/${currentYear+1}`}>{currentYear}/{currentYear+1}</option>
+                </select>
 
                 <label htmlFor='timesOpened'>Number of times Opened</label>
                 <input 
@@ -147,16 +168,40 @@ export default () => {
                     type='number'
                     name='totalTimesSchoolOpened'
                 />
-                <SuccessModal status={successModal} />
-                <ErrorModal status={errorModal} error={error} closer={()=>setErrorModal(false)}/>
+                <SuccessModal 
+                    status={successModal} 
+                    message={"School details have been successfully saved"}
+                />
+                <ErrorModal 
+                    status={!(error==='')} 
+                    error={error} 
+                    closer={()=>setError('')}
+                />
+
+                <WarningModal
+                    status={sessionWarning}
+                    closer={cancelSessionChange}
+                    confirmer={confirmSessionChange}
+                    message={
+                        <>
+                            <h3>Important!</h3>
+                            <p>
+                                Changing the academic session is a critical action that affects the entire school database.<br /><br />
+                                <b>Only do this at the start of a new academic year.</b><br /><br />
+                                Once changed, all new records will belong to the new session.<br />
+                                Past results will remain in their original session.<br /><br />
+                                <b>Proceed only if you are certain.</b><br /><br />
+                                Change session from <b>{schoolData.currentSession} → {pendingSession}</b>?
+                            </p>
+                        </>
+                    }
+                />
 
                 <button type='submit' disabled={!isModified} > Save </button>
             </form>
             <button type='button' onClick={logger}> Logout </button>
-
         </div>
     )
 }
 
-
-//need to ensure the user is warned to save when moving from one component to another
+export default Basics;

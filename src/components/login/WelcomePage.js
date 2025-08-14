@@ -1,7 +1,6 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default ()=>{
+const WelcomePage = ()=>{
     const navigate = useNavigate();
 
     const logger = (e) => {
@@ -25,3 +24,5 @@ export default ()=>{
         </div>
     )
 }
+
+export default WelcomePage;

@@ -1,16 +1,14 @@
-import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-
-export default () => {
+const Header = () => {
     const nameOfSchool = useSelector(state=>state.school.name)
     const {basicsIsModified,classesIsModified} = useSelector(state=>state.auth)
     const navigate = useNavigate();
     const location = useLocation();
 
-    const handleNavigation = (e, to) => {
+    const handleNavigation = (e, destination) => {
         const pathArray = location.pathname.split("/")
         const section = pathArray[pathArray.length-1]
         let isModified;
@@ -27,10 +25,10 @@ export default () => {
             e.preventDefault();
             const confirmLeave = window.confirm('If you leave now, you would lose your unsaved data.');
             if (confirmLeave) {
-                navigate(to);
+                navigate(destination);
             }
         }else {
-            navigate(to)
+            navigate(destination);
         } 
     } 
 
@@ -45,3 +43,5 @@ export default () => {
         </div>
     )
 } 
+
+export default Header;

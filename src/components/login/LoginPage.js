@@ -1,7 +1,7 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import { useParams } from "react-router-dom";
 
-export default () => {
+const LoginPage = () => {
     const [accessCode, setAccessCode] = useState("")
     const { role } = useParams();
     const identity = role.toUpperCase()
@@ -21,3 +21,5 @@ export default () => {
         </div>
     )
 }
+
+export default LoginPage;

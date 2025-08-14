@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import Loading from '../Loading';
@@ -14,6 +14,9 @@ export default () => {
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const currentYear = new Date().getFullYear();
+    const sessionOptions = [];
+    
     const [parameters, setParameters] = useState({
         type: 'ca',
         session,
@@ -21,6 +24,10 @@ export default () => {
         className: '',
         studentName: ''
     });
+
+    for (let year = 2025; year <= currentYear; year++) {
+        sessionOptions.push(`${year}/${year + 1}`);
+    }
 
     useEffect(() => {
         const totalClasses = [];
@@ -107,13 +114,17 @@ export default () => {
                 <label htmlFor='session'>
                     Session:
                 </label>
-                <input
+                <select
                     type="text"
                     value={parameters.session}
                     onChange={changeHandler}
                     name='session'
                     id='session'
-                />
+                >
+                    {sessionOptions.map(option => (
+                        <option key={option} value={option}>{option}</option>
+    ))}
+                </select>
             </div>
             <div>
                 <label htmlFor='term'>

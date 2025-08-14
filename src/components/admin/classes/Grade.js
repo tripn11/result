@@ -1,6 +1,6 @@
-import React, {useState,useEffect} from 'react';
+import {useState,useEffect} from 'react';
 
-export default props => {
+const Grade = props => {
     const[name, scale, code] = props.grade.split("-")
     const [grading, setGrading] = useState({name,scale})
 
@@ -54,3 +54,5 @@ export default props => {
     }
     
 }
+
+export default Grade;

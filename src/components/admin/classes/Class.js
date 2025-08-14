@@ -1,7 +1,7 @@
-import React, {useState} from "react";
-import { codeGenerator } from "../../../codeGenerator"; 
+import {useState} from "react";
+import codeGenerator from "../../../utilities/codeGenerator"; 
 
-export default props => {
+const Class = props => {
     const [eachClass, setEachClass] = useState({
         code:props.details.code,
         class:props.details.class||'',
@@ -49,9 +49,12 @@ export default props => {
                 value={eachClass.code+"-"+eachClass.class}
                 name='code'
                 onBlur={updater}
+                disabled={true}
             />
             <button onClick={codeChanger}>Change Code</button>
             <button onClick={remover}>x</button>
         </div>
     )
 }
+
+export default Class;

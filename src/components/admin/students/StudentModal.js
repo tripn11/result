@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Modal from 'react-modal';
 import axios from "axios";
 import Loading from '../../Loading.js';
 import { useDispatch, useSelector } from "react-redux";
 import { setTotalStudentsInSchool, setStudentsInSection, editStudentInSection, removeStudentFromSection } from "../../../reducers/studentsReducer.js";
-import SuccessModal from '../../SuccessModal.js'
-import ErrorModal from "../../ErrorModal.js";
+import SuccessModal from '../modals/SuccessModal.js'
+import ErrorModal from "../modals/ErrorModal.js";
+import codeGenerator from "../../../utilities/codeGenerator.js";
 
-export default props => {
+const StudentModal = props => {
     const host = process.env.REACT_APP_HOST;
     const token = useSelector(state => state.auth.token);
     const schoolClasses = useSelector(state => state.school.classes);
@@ -18,6 +19,7 @@ export default props => {
     const [classes, setClasses] = useState([]);
     const dispatch = useDispatch();
     const [deleteModal, setDeleteModal] = useState(false);
+    const [changed, setChanged] = useState(false);
 
     const today = new Date().toISOString().split('T')[0];
     
@@ -32,7 +34,7 @@ export default props => {
         height: '',
         weight: '',
         status: 'active',
-        class: props.actualClass
+        class: props.actualClass,
     };
 
     const [student, setStudent] = useState(initialStudent);
@@ -61,6 +63,7 @@ export default props => {
     }, [props.actualClass]);
 
     const changeHandler = e => {
+        setChanged(true);
         const { name, value } = e.target;
 
         if (name === 'weight' || name === 'height') {
@@ -90,6 +93,10 @@ export default props => {
     };
 
     const closeHandler = () => {
+        if (props.student) {
+            const dateOfBirth = new Date(props.student.dateOfBirth).toISOString().split('T')[0];
+            setStudent({...props.student,dateOfBirth});
+        }
         props.modalCloser();
     };
 
@@ -97,13 +104,14 @@ export default props => {
         try {
             setLoading(true);
             if(props.action==='add') {
-                await axios.post(host + '/students', student, {
+                const newStudent = await axios.post(host + '/students', student, {
                     headers: {
                         Authorization: 'Bearer ' + token
                     }
                 });
                 dispatch(setTotalStudentsInSchool('add'));
-                dispatch(setStudentsInSection(student));
+                dispatch(setStudentsInSection(newStudent.data));
+                setStudent(initialStudent);
             }else {
                 await axios.patch(host+'/students/'+student._id, student, {
                     headers: {
@@ -111,8 +119,13 @@ export default props => {
                     }
                 });
                 dispatch(editStudentInSection(student))
+                const inSection = props.classes.includes(student.class);
+                if(!inSection) {
+                    dispatch(removeStudentFromSection(student._id));
+                }
             }
 
+            setChanged(false);
             setLoading(false);
             setSuccessStatus(true);
             setTimeout(() => {
@@ -161,6 +174,11 @@ export default props => {
         }
     }
 
+    const codeChanger = () => {
+        setChanged(true);
+        setStudent(prev=>({...prev,code:codeGenerator(7)}))
+    }
+
     return (
         <Modal
             isOpen={props.state}
@@ -202,7 +220,7 @@ export default props => {
                         />
                     </div>
 
-                    {props.action === 'edit' &&
+                    {props.action === 'edit' && 
                         <div>
                             <label htmlFor="class">Class</label>
                             <select id="class" name="class" value={student.class} onChange={changeHandler}>
@@ -250,10 +268,16 @@ export default props => {
                         />
                     </div>
 
+                    {props.action === 'edit' && 
+                        <div>
+                            <span>{student.code}</span>
+                            <button onClick={codeChanger}>Change Code</button>
+                        </div>
+                    }
                     {props.action === 'edit' && <button onClick={deleteModalController}>Delete student</button>}
 
-                    <button onClick={studentSaver}>Save</button>
-                    <SuccessModal status={successStatus} />
+                    <button onClick={studentSaver} disabled={!changed}>Save</button>
+                    <SuccessModal status={successStatus} message={`Student data has been ${props.action}ed successfully!`}/>
                     <ErrorModal status={errorStatus} closer={errorModalCloser} error={error} />
                 
                     <Modal 
@@ -271,3 +295,5 @@ export default props => {
         </Modal>
     );
 };
+
+export default StudentModal;

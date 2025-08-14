@@ -1,7 +1,7 @@
-import React, {useState} from "react";
+import { useState } from "react";
 import StudentModal from "./StudentModal";
 
-export default props => {
+const Student = props => {
     const [modalStatus, setModalStatus] = useState(false);
 
     const editor = () => {
@@ -18,9 +18,11 @@ export default props => {
         <div>
             <span>{props.index + 1}</span>
             <span>{props.student.name.surName+' '+ props.student.name.firstName +
-                " "+props.student.name.otherName}</span>  
+                " "+props.student.name.otherName}</span> 
             <button onClick={editor}>Edit</button>
-            <StudentModal action='edit' state={modalStatus} modalCloser={editor} student={props.student}/>
+            <StudentModal action='edit' state={modalStatus} modalCloser={editor} student={props.student} classes={props.classes}/>
         </div>
     )
 }
+
+export default Student;
