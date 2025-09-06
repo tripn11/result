@@ -3,6 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
     totalStudentsInSchool:0,
     studentsInSection:[],
+    studentsInClass:[],
+    totalStudentsInClass:0
 };
 
 const studentsSlice = createSlice({
@@ -18,12 +20,18 @@ const studentsSlice = createSlice({
                 state.totalStudentsInSchool = action.payload
             }
         },
+        setTotalStudentsInClass(state, action) {
+            state.totalStudentsInClass = action.payload;
+        },
         setStudentsInSection(state,action) {
             if(Array.isArray(action.payload)) {
                 state.studentsInSection= action.payload  
             }else if(typeof action.payload === 'object') {
                 state.studentsInSection.push(action.payload)
             }
+        },
+        setStudentsInClass(state, action) {
+            state.studentsInClass = action.payload;
         },
         editStudentInSection(state,action) {
             const studentIndex = state.studentsInSection.findIndex(each=>each._id===action.payload._id)
@@ -36,5 +44,11 @@ const studentsSlice = createSlice({
     }
 })
 
-export const {setTotalStudentsInSchool,setStudentsInSection,editStudentInSection, removeStudentFromSection} = studentsSlice.actions;
+export const {setTotalStudentsInSchool,
+                setStudentsInSection,
+                editStudentInSection, 
+                removeStudentFromSection,
+                setStudentsInClass,
+                setTotalStudentsInClass
+            } = studentsSlice.actions;
 export default studentsSlice.reducer;

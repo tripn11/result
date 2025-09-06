@@ -5,17 +5,19 @@ import { combineReducers } from 'redux';
 import authReducer from '../reducers/authReducer';
 import schoolReducer from '../reducers/schoolReducer';
 import studentsReducer from '../reducers/studentsReducer';
+import resultReducer from '../reducers/resultReducer';
 
 const rootReducer = combineReducers({
     auth: authReducer,
     school: schoolReducer,
-    students: studentsReducer
+    students: studentsReducer,
+    results: resultReducer
 });
 
 const persistConfig = {
     key: 'root',
     storage: storageSession,
-    whitelist: ['auth', 'school']
+    whitelist: ['auth', 'school', 'students', 'results']
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { setInitialSchool } from '../../reducers/schoolReducer';
 import { setAuthState } from "../../reducers/authReducer";
 import Loading from "../Loading";
+import BackButton from "../BackButton";
 
 const AdminLoginPage = () => {
     const [loginDetails, setLoginDetails] = useState({email:'',password:''})
@@ -37,6 +38,7 @@ const AdminLoginPage = () => {
 
     return loading?<Loading />:(
         <div>
+            <BackButton label="Go Home" destination="/"/>
             <form onSubmit={formHandler}>
                 <h2>Login as Admin</h2>
                 <label htmlFor="email">Email</label>

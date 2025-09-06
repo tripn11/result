@@ -14,6 +14,9 @@ import Section from "../components/admin/classes/Section";
 import Students from "../components/admin/students/Students";
 import StudentsSection from "../components/admin/students/Section";
 import Results from "../components/admin/Result";
+import TeachersRoute from "./TeachersRoute";
+import StudentList from "../components/teacher/StudentList";
+import StudentResult from "../components/teacher/StudentResult";
 
 const AppRouter = () => {
     const classes = useSelector(state=>state.school.classes)
@@ -43,6 +46,10 @@ const AppRouter = () => {
                         </Route>
                         <Route path="results" element={<Results />} />
                     </Route>
+                </Route>
+                <Route element={<TeachersRoute />}>
+                    <Route path="teacher" element={<StudentList />} />
+                    <Route path="teacher/:id" element={<StudentResult />} />
                 </Route>
                 <Route path='/*' element={ <NotFoundPage /> } />
             </Routes>

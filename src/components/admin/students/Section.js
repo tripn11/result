@@ -1,7 +1,6 @@
 import {useEffect, useState} from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { useDispatch } from "react-redux";
 import Class from "./ClassList.js";
 import { setStudentsInSection } from "../../../reducers/studentsReducer.js";
 

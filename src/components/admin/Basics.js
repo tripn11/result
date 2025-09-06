@@ -5,9 +5,9 @@ import { logout } from '../../reducers/authReducer.js';
 import { setBasics } from '../../reducers/schoolReducer.js';
 import { setAuthState } from '../../reducers/authReducer.js';
 import Loading from '../Loading.js';
-import SuccessModal from './modals/SuccessModal.js';
-import ErrorModal from './modals/ErrorModal.js';
-import WarningModal from './modals/WarningModal.js';
+import SuccessModal from '../modals/SuccessModal.js';
+import ErrorModal from '../modals/ErrorModal.js';
+import WarningModal from '../modals/WarningModal.js';
 
 const Basics = () => {
     const schoolDetails = useSelector(state=>state.school)
@@ -91,14 +91,22 @@ const Basics = () => {
         }
     }
 
-    const logger = async()=>{
+    const logger = async(magnitude)=>{
         try{
             setLoading(true)
-            await axios.post(host+'/schools/logout',null, {
-                headers: {
-                    Authorization:'Bearer '+ token
-                }
-            }) 
+            if(!magnitude) {
+                await axios.post(host+'/schools/logout',null, {
+                    headers: {
+                        Authorization:'Bearer '+ token
+                    }
+                })
+            } else {
+                await axios.post(host+'/schools/logoutAll',null, {
+                    headers: {
+                        Authorization:'Bearer '+ token
+                    }
+                })
+            }
             dispatch(logout())
         }catch (e) {
             console.log(e)
@@ -200,6 +208,7 @@ const Basics = () => {
                 <button type='submit' disabled={!isModified} > Save </button>
             </form>
             <button type='button' onClick={logger}> Logout </button>
+            <button type='button' onClick={()=>logger("all")}> Logout on all devices </button>
         </div>
     )
 }

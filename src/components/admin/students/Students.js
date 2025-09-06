@@ -3,10 +3,11 @@ import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { setTotalStudentsInSchool } from "../../../reducers/studentsReducer";
-import WarningModal from "../modals/WarningModal";
-import ErrorModal from "../modals/ErrorModal";
-import SuccessModal from "../modals/SuccessModal";
+import WarningModal from "../../modals/WarningModal.js";
+import ErrorModal from "../../modals/ErrorModal.js";
+import SuccessModal from "../../modals/SuccessModal.js";
 import { setStudentsInSection } from "../../../reducers/studentsReducer.js";
+import Loading from "../../Loading.js";
 
 
 const Students = () => {
@@ -15,9 +16,27 @@ const Students = () => {
     const totalStudentsInSchool = useSelector(state=>state.students.totalStudentsInSchool)
     const [warning, setWarning] = useState(false);
     const [success, setSuccess] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
     const [error, setError] = useState('');
     const dispatch = useDispatch()
     const location = useLocation()
+    const [loading, setLoading] = useState(true);
+
+    let section = location.pathname.split("/").pop();
+    switch(section) {
+        case 'students':
+            section = 'nursery';
+            break;
+        case 'primary':
+            section = 'primary';
+            break;
+        case 'jss':
+            section = 'juniourSecondary';
+            break;
+        case 'ss':
+            section = 'seniorSecondary';
+            break;
+    }
     
     useEffect(()=>{
         const getTotalNumberOfStudents = async ()=> {
@@ -30,35 +49,21 @@ const Students = () => {
                 dispatch(setTotalStudentsInSchool(total.data.number))
             } catch (e) {
                 console.log(e)
+            } finally {
+                setLoading(false);
             }
         }
         getTotalNumberOfStudents()
     },[totalStudentsInSchool])
 
     const promoter = async () => {
-        let section = location.pathname.split("/").pop();
-        switch(section) {
-            case 'students':
-                section = 'nursery';
-                break;
-            case 'primary':
-                section = 'primary';
-                break;
-            case 'jss':
-                section = 'juniourSecondary';
-                break;
-            case 'ss':
-                section = 'seniorSecondary';
-                break;
-        }
-
+        setLoading(true);
         try {
             await axios.post(host+'/students/promote', {}, {
-                    headers:{
-                        Authorization:'Bearer '+ token
-                    }
+                headers:{
+                    Authorization:'Bearer '+ token
                 }
-            )
+            })
 
             const studentData = await axios.get(host+'/sectionStudents?section='+section, {
                 headers: {
@@ -70,7 +75,9 @@ const Students = () => {
             dispatch(setStudentsInSection(sectionStudents))
             dispatch(setTotalStudentsInSchool(0));
 
+            setLoading(false)
             setWarning(false);
+            setSuccessMessage('All students have been promoted successfully')
             setSuccess(true);
             setTimeout(() => {
                 setSuccess(false);
@@ -80,6 +87,38 @@ const Students = () => {
         }
     } 
 
+    const codeResetter = async () => {
+        try {
+            await axios.post(host+'/students/resetCodes', {}, {
+                headers:{
+                    Authorization:'Bearer '+ token
+                }
+            })
+
+            const studentData = await axios.get(host+'/sectionStudents?section='+section, {
+                headers: {
+                    Authorization:'Bearer '+ token
+                }
+            })
+
+            const sectionStudents = studentData.data.students
+            dispatch(setStudentsInSection(sectionStudents))
+
+            setLoading(false)
+            setSuccessMessage("All codes have been reset successfully")
+            setSuccess(true);
+            setTimeout(() => {
+                setSuccess(false);
+            }, 2000);
+        } catch (e) {
+            setError(e.message);
+        }
+    }
+
+    if(loading) {
+        return <Loading />
+    }
+    
     return (
         <div>
             <div>
@@ -90,7 +129,8 @@ const Students = () => {
             </div>
             <div>Total number of students:{totalStudentsInSchool}</div>
             <Outlet />
-            <button onClick={()=>setWarning(true)}>Promote All Students</button>
+            {totalStudentsInSchool>0 && <button onClick={codeResetter}>Reset Student Codes</button>}
+            {totalStudentsInSchool>0 && <button onClick={()=>setWarning(true)}>Promote All Students</button>}
 
             <WarningModal 
                 status={warning} 
@@ -101,7 +141,7 @@ const Students = () => {
 
             <SuccessModal 
                 status={success}
-                message="Students promoted successfully!"
+                message={successMessage}
             />
 
             <ErrorModal 

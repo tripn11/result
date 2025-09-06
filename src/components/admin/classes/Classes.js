@@ -3,8 +3,8 @@ import { NavLink, Outlet } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import Loading from "../../Loading.js";
-import SuccessModal from "../modals/SuccessModal.js";
-import ErrorModal from "../modals/ErrorModal.js";
+import SuccessModal from "../../modals/SuccessModal.js";
+import ErrorModal from "../../modals/ErrorModal.js";
 import { setAuthState } from "../../../reducers/authReducer.js";
 
 const Classes = () => {

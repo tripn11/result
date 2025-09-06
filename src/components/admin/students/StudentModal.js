@@ -4,8 +4,8 @@ import axios from "axios";
 import Loading from '../../Loading.js';
 import { useDispatch, useSelector } from "react-redux";
 import { setTotalStudentsInSchool, setStudentsInSection, editStudentInSection, removeStudentFromSection } from "../../../reducers/studentsReducer.js";
-import SuccessModal from '../modals/SuccessModal.js'
-import ErrorModal from "../modals/ErrorModal.js";
+import SuccessModal from '../../modals/SuccessModal.js'
+import ErrorModal from "../../modals/ErrorModal.js";
 import codeGenerator from "../../../utilities/codeGenerator.js";
 
 const StudentModal = props => {

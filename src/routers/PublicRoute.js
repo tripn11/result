@@ -3,8 +3,9 @@ import { Navigate, Outlet } from 'react-router-dom';
 
 
 const PublicRoute = () => {
-    const authenticated = useSelector(state=>state.auth.type!=='')
-    return authenticated?<Navigate to='/admin' />:<Outlet />
+    const identity = useSelector(state=>state.auth.type)
+    const unknown = identity !== 'admin' && identity !== 'teacher' && identity !== 'student';
+    return unknown?<Outlet />:<Navigate to={`/${identity}`} />
 }
 
 export default PublicRoute;
