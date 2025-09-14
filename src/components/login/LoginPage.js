@@ -7,7 +7,7 @@ import Loading from '../Loading';
 import ErrorModal from '../modals/ErrorModal';
 import { setAuthState } from '../../reducers/authReducer';
 import { setResults, setClassDetails } from '../../reducers/resultReducer';
-import { setStudentsInClass, setTotalStudentsInClass } from "../../reducers/studentsReducer";
+import { setStudentsInClass, setTotalStudentsInClass, setStudent } from "../../reducers/studentsReducer";
 
 const LoginPage = () => {
     const host = process.env.REACT_APP_HOST
@@ -20,13 +20,12 @@ const LoginPage = () => {
     const grantAccess = async () => {
         setLoading(true);
         try{
-            const response = await axios.get(host+"/classStudents", {
-                headers: {
-                    'Authorization': `Bearer ${accessCode}`
-                }
-            })
-
             if(role==='teacher') {
+                const response = await axios.get(host+"/classStudents", {
+                    headers: {
+                        'Authorization': `Bearer ${accessCode}`
+                    }
+                })
                 dispatch(setStudentsInClass(response.data.students));
                 dispatch(setResults(response.data.results));
                 dispatch(setClassDetails({
@@ -35,8 +34,18 @@ const LoginPage = () => {
                     className: response.data.teachersClass
                 }));
                 dispatch(setTotalStudentsInClass(response.data.totalStudentsInClass));
+                
+            }else if(role==='student') {
+                const response = await axios.get(host+"/student", {
+                    headers: {
+                        'Authorization': `Bearer ${accessCode}`
+                    }
+                })
+                dispatch(setStudent(response.data));
             }
+
             dispatch(setAuthState({type:role,token:accessCode}))
+            
         } catch(e) {
             setError(e.response ? e.response.data : e.message);
         } finally {

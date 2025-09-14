@@ -6,8 +6,7 @@ import Loading from '../Loading';
 import axios from 'axios';
 import { updateResult } from "../../reducers/resultReducer";
 import SuccessModal from "../modals/SuccessModal";
-
-
+import ErrorModal from "../modals/ErrorModal";
 
 const StudentResult = () => {
     const { id } = useParams();
@@ -23,6 +22,7 @@ const StudentResult = () => {
     const [modified, setModified] = useState(false); 
     const [success, setSuccess] = useState(false);
     const [pdfUrl, setPdfUrl] = useState(null);
+    const [error, setError] = useState(null);
     const totalStudents = useSelector(state => state.students.totalStudentsInClass);
     const dispatch = useDispatch();
     const initialTotal = {};
@@ -84,15 +84,15 @@ const StudentResult = () => {
 
     const commentChanger = (e) => {
         setModified(true);
-        setComments({...comments, teachers: e.target.value})
+        setComments({...comments, [e.target.name]: e.target.value})
     }
 
     const resultSaver = async () => {
         setLoading(true);
         const finalResult = {
+            ...result,
             age: student.age,
             population: totalStudents,
-            ...result,
             subjects,
             teachersComment: comments.teachers,
             principalsComment: comments.principals
@@ -118,7 +118,7 @@ const StudentResult = () => {
             setSuccess(true);
             setTimeout(() => setSuccess(false), 2000);
         } catch (error) {
-            console.error("Error saving result:", error);
+            setError(error.response?.data || error.message);
         } finally {
             setLoading(false);
         }
@@ -126,16 +126,17 @@ const StudentResult = () => {
 
     const resultViewer = async () => {
         try {
-            const response = await axios.get(host+"/classResult", {
+            setLoading(true)
+            const response = await axios.get(host+"/result", {
                 params: {
                     _id: student._id,
-                    session: result.session,
                     term: result.term,
                     className: result.className,
                     type: resultType
                 },
                 headers: {
-                    Authorization: `Bearer ${accessCode}`
+                    Authorization: `Bearer ${accessCode}`,
+                    Role:"teacher"
                 },
             });
 
@@ -146,11 +147,14 @@ const StudentResult = () => {
             setPdfUrl(fileURL);
 
         } catch (e) {
-            console.log(e);
+            setError(e.response?.data || e.message);
+        } finally {
+            setLoading(false);
         }
     };
 
     if(loading) return <Loading />
+    if(error) return <ErrorModal status={!!error} closer={() => setError(null)} error={error || "An error occurred"} />
     return !result ?  <div><BackButton /> No result found </div> :
         <div>
             <BackButton confirm={modified} />
@@ -159,8 +163,8 @@ const StudentResult = () => {
                 <div>
                     <input type="radio" id="ca" name="resultType" value="ca" checked={resultType === 'ca'} onChange={() => setResultType('ca')} />
                     <label htmlFor="ca">CA</label>
-                    <input type="radio" id="exam" name="resultType" value="exam" checked={resultType === 'exam'} onChange={() => setResultType('exam')} />
-                    <label htmlFor="exam">Exam</label>
+                    <input type="radio" id="term" name="resultType" value="term" checked={resultType === 'term'} onChange={() => setResultType('term')} />
+                    <label htmlFor="term">Term</label>
                 </div>
 
                 <div>
@@ -241,6 +245,7 @@ const StudentResult = () => {
                             value={comments.teachers}
                             onChange={commentChanger}
                             maxLength={300}
+                            name="teachers"
                         />
                     </div>
                     <div>
@@ -249,6 +254,7 @@ const StudentResult = () => {
                             value={comments.principals} 
                             onChange={commentChanger} 
                             maxLength={300} 
+                            name="principals"
                         />
                     </div>
                 </div>

@@ -4,7 +4,8 @@ const initialState = {
     totalStudentsInSchool:0,
     studentsInSection:[],
     studentsInClass:[],
-    totalStudentsInClass:0
+    totalStudentsInClass:0,
+    student:{}
 };
 
 const studentsSlice = createSlice({
@@ -41,14 +42,20 @@ const studentsSlice = createSlice({
             const studentIndex = state.studentsInSection.findIndex(each=>each._id===action.payload);
             state.studentsInSection.splice(studentIndex,1)
         },
+        setStudent(state, action) {
+            state.student = action.payload;
+        }
     }
 })
 
-export const {setTotalStudentsInSchool,
-                setStudentsInSection,
-                editStudentInSection, 
-                removeStudentFromSection,
-                setStudentsInClass,
-                setTotalStudentsInClass
-            } = studentsSlice.actions;
+export const {
+    setTotalStudentsInSchool,
+    setStudentsInSection,
+    editStudentInSection, 
+    removeStudentFromSection,
+    setStudentsInClass,
+    setTotalStudentsInClass,
+    setStudent
+} = studentsSlice.actions;
+
 export default studentsSlice.reducer;
