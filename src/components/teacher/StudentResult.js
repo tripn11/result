@@ -57,6 +57,7 @@ const StudentResult = () => {
     const handleChange = (subject, grade, value) => {
         setUpdatedSubject(subject);
         setModified(true);
+        setPdfUrl(null)
         setSubjects(prevSubjects => {
             if(value==="-") {
                 const sub = {};
@@ -85,6 +86,7 @@ const StudentResult = () => {
     const commentChanger = (e) => {
         setModified(true);
         setComments({...comments, [e.target.name]: e.target.value})
+        setPdfUrl(null)
     }
 
     const resultSaver = async () => {
@@ -94,6 +96,7 @@ const StudentResult = () => {
             age: student.age,
             population: totalStudents,
             subjects,
+            attendance: comments.attendance,
             teachersComment: comments.teachers,
             principalsComment: comments.principals
         }
@@ -107,12 +110,12 @@ const StudentResult = () => {
                 });
                 dispatch(updateResult({id:result.owner, result: finalResult}));
             } else {
-                await axios.post(host+"/addResult", finalResult, {
+                const updatedResult = await axios.post(host+"/addResult", finalResult, {
                     headers: {
                         'Authorization': `Bearer ${accessCode}`
                     }
                 });
-                dispatch(updateResult({id:result.owner, result: finalResult}));
+                dispatch(updateResult({id:result.owner, result: updatedResult.data}));
             }
             setModified(false);
             setSuccess(true);
@@ -237,6 +240,14 @@ const StudentResult = () => {
                             })}
                         </tbody>
                     </table>
+                </div>
+                <div>
+                    <label>Attendance:</label>
+                    <input 
+                        type="number" 
+                        value={comments.attendance} 
+                        onChange={commentChanger} 
+                        name="attendance" />
                 </div>
                 <div>
                     <div>
