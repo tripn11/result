@@ -25,8 +25,8 @@ const Basics = () => {
         phoneNumber:schoolDetails.phoneNumber,
         address:schoolDetails.address,
         motto:schoolDetails.motto,
-        currentTerm:schoolDetails.termInfo.currentTerm,
-        currentSession:schoolDetails.termInfo.currentSession,
+        currentTerm:schoolDetails.termInfo.currentTerm || 'first',
+        currentSession:schoolDetails.termInfo.currentSession || `${currentYear-1}/${currentYear}`,
         totalTimesSchoolOpened:schoolDetails.termInfo.totalTimesSchoolOpened
     })
 
@@ -67,7 +67,7 @@ const Basics = () => {
         }
         delete finalSchoolData.currentTerm
         delete finalSchoolData.currentSession
-        delete finalSchoolData.totalTimesSchoolOpened  
+        delete finalSchoolData.totalTimesSchoolOpened 
         
         try {
             setLoading(true)
@@ -109,7 +109,11 @@ const Basics = () => {
             }
             dispatch(logout())
         }catch (e) {
-            console.log(e)
+            if(e.response && e.response.data) {
+                setError(e.response.data)
+            }else {
+                setError(e.message)
+            }
         } finally {
             setLoading(false)
         }
@@ -165,6 +169,7 @@ const Basics = () => {
                     onChange={inputHandler}
                     name='currentSession'
                 >
+                    <option>Select Session</option>
                     <option value={`${currentYear-1}/${currentYear}`}>{currentYear-1}/{currentYear}</option>
                     <option value={`${currentYear}/${currentYear+1}`}>{currentYear}/{currentYear+1}</option>
                 </select>

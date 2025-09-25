@@ -6,6 +6,7 @@ import { setResults } from '../../reducers/resultReducer';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Loading from '../Loading';
+import ErrorModal from '../modals/ErrorModal';
 
 const StudentList = () => {
     const students = useSelector(state => state.students.studentsInClass);
@@ -16,6 +17,7 @@ const StudentList = () => {
     const pages = Math.ceil(totalStudents / 20);
     const host = process.env.REACT_APP_HOST;
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null)
     const navigate = useNavigate();
 
     const pageFetcher = async pageNumber => {
@@ -29,12 +31,13 @@ const StudentList = () => {
             dispatch(setStudentsInClass(response.data.students));
             dispatch(setResults(response.data.results));
         } catch (error) {
-            console.error("Error fetching page:", error);
+            setError(error.response?.data || error.message);
         } finally {
             setLoading(false);
         }
     }
 
+    if(error) return <ErrorModal status={!!error} closer={() => setError(null)} error={error || "An error occurred"} />
     return loading ? <Loading /> : (
         <div>
             <span>Welcome, {title} {teachersName}</span>
