@@ -26,7 +26,6 @@ const LoginPage = () => {
                         'Authorization': `Bearer ${accessCode}`
                     }
                 })
-                console.log(response)
                 dispatch(setStudentsInClass(response.data.students));
                 dispatch(setResults(response.data.results));
                 dispatch(setClassDetails({

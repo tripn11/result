@@ -24,6 +24,7 @@ const Class = props => {
     const codeChanger = () => {
         const code = codeGenerator(7)
         setEachClass({...eachClass,code})
+        props.updater({...eachClass,code}, 'classes', eachClass.code)
     }
    
     return (

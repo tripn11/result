@@ -19,6 +19,10 @@ import StudentList from "../components/teacher/StudentList";
 import StudentResult from "../components/teacher/StudentResult";
 import StudentsRoute from "./StudentRoute";
 import Student from "../components/student/Student";
+import OwnerRoute from "./OwnerRoute";
+import Login from "../components/owner/Login";
+import Dashboard from "../components/owner/Dashboard";
+
 
 const AppRouter = () => {
     const classes = useSelector(state=>state.school.classes)
@@ -30,6 +34,7 @@ const AppRouter = () => {
                     <Route path='login' element={<AdminLoginPage />} />
                     <Route path="login/:role" element={<LoginPage />}/>
                     <Route path="signup" element={<SignupPage />} />
+                    <Route path="owner/login" element={<Login />} />
                 </Route>
                 <Route element={<AdminRoute />}>
                     <Route path="admin" element={<Header />}>
@@ -55,6 +60,9 @@ const AppRouter = () => {
                 </Route>
                 <Route element={<StudentsRoute />}>
                     <Route path="student" element={<Student />} />
+                </Route>
+                <Route element={<OwnerRoute />}>
+                    <Route path="owner" element={<Dashboard />} />
                 </Route>
                 <Route path='/*' element={ <NotFoundPage /> } />
             </Routes>

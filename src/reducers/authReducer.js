@@ -4,7 +4,8 @@ const initialState = {
     type:'',
     token:'',
     basicsIsModified:false,
-    classesIsModified:false
+    classesIsModified:false,
+    schools:[] //for owner only
 }
 
 const authSlice = createSlice({
