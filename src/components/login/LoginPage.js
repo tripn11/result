@@ -29,13 +29,13 @@ const LoginPage = () => {
                 dispatch(setStudentsInClass(response.data.students));
                 dispatch(setResults(response.data.results));
                 dispatch(setClassDetails({
-                    title: response.data.teachersTitle,
+                    teachersTitle: response.data.teachersTitle,
                     teachersName: response.data.teachersName,
-                    className: response.data.teachersClass
+                    className: response.data.teachersClass,
+                    timesSchoolOpened:response.data.timesSchoolOpened,
                 }));
                 dispatch(setTotalStudentsInClass(response.data.totalStudentsInClass));
-                
-            }else if(role==='student') {
+            } else if(role==='student') {
                 const response = await axios.get(host+"/student", {
                     headers: {
                         'Authorization': `Bearer ${accessCode}`

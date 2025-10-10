@@ -13,12 +13,17 @@ const StudentResult = () => {
     const host = process.env.REACT_APP_HOST
     const result = useSelector(state => state.results.results.find(result => result.owner === id));
     const student = useSelector(state => state.students.studentsInClass.find(student => student._id === id));
+    const classDetails = useSelector(state => state.results.classDetails)
     const accessCode = useSelector(state => state.auth.token);
     const [resultType, setResultType] = useState('ca');
     const [subjects, setSubjects] = useState(result ? result.subjects : null);
     const grades = subjects ? Object.keys(Object.values(subjects)[0]) : null;
     const [updatedSubject, setUpdatedSubject] = useState("")
-    const [comments, setComments] = useState({teachers:result.teachersComment || '', principals:result.principalsComment || ''})
+    const [comments, setComments] = useState({
+        teachers:result.teachersComment || '', 
+        principals:result.principalsComment || '',
+        attendance:result.attendance || ''
+    })
     const [modified, setModified] = useState(false); 
     const [success, setSuccess] = useState(false);
     const [pdfUrl, setPdfUrl] = useState(null);
@@ -90,6 +95,8 @@ const StudentResult = () => {
     }
 
     const resultSaver = async () => {
+        console.log(classDetails)
+        console.log(classDetails.teachersTitle)
         setLoading(true);
         const finalResult = {
             ...result,
@@ -98,7 +105,10 @@ const StudentResult = () => {
             subjects,
             attendance: comments.attendance,
             teachersComment: comments.teachers,
-            principalsComment: comments.principals
+            principalsComment: comments.principals,
+            timesSchoolOpened: classDetails.timesSchoolOpened,
+            teachersName:classDetails.teachersName,
+            teachersTitle:classDetails.teachersTitle
         }
 
         try {
