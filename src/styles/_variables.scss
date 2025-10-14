@@ -1,0 +1,31 @@
+/* ---------- Fonts ---------- */
+$font-primary: 'Poppins', sans-serif;
+$font-secondary: 'Open Sans', sans-serif;
+
+
+
+/* ---------- Core Colors ---------- */
+$color-primary: #6A1B9A;   // Deep Royal Purple
+$color-accent: #FFD740;    // Gold
+$color-background: #F9F7FD; // App background
+$color-surface: #FFFFFF;   // Cards, forms, etc.
+$color-text: #2E1A47;      // Main text
+$color-text-light: #FFFFFF; // On dark backgrounds
+
+
+
+/* --- Optional Enhancements --- */
+$color-muted: #7E57C2;      // Subtle text or secondary labels
+$color-border: #E0E0E0;     // Light border (for inputs, cards)
+
+
+
+/* ---------- UI Elements ---------- */
+$radius: 10px;
+$shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+$transition: all 0.3s ease;
+
+
+
+/* ---------- Optional Gradients ---------- */
+$gradient-primary: linear-gradient(135deg, #6A1B9A, #8E24AA);

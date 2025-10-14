@@ -1,0 +1,136 @@
+@use 'variables' as v;
+
+#student {
+    header {
+        box-shadow: v.$shadow;
+
+        h1 {
+            font-size: 1.5rem;
+            text-align: center;
+            padding:1rem;
+            text-transform: capitalize;
+        }
+    }
+
+    p {
+        font-style: italic;
+        padding: 0.5rem;
+        margin-bottom: 5rem;
+    }
+
+    .fx-block {
+        scale: 0.6;
+        position: absolute;
+        top:8rem;
+        right: 0;
+    } 
+
+    .filters {
+        padding: 1rem;
+
+        label {
+            font-weight: bold;
+        }
+
+        select {
+            padding: 0.4rem
+        }
+    }
+
+    .student-buttons {
+        margin: 5rem 1rem;
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+
+        button {
+            width: 9rem;
+            padding: 0.7rem;
+        }
+    }
+
+    .actual-result {
+        position: absolute;
+        top: 0;
+
+        button {
+            margin-left: 40%;
+        }
+    }
+}
+
+
+
+
+
+
+// switch
+.toggle > div {
+  position: relative;
+  padding: 10px;
+  width: 150px;
+  height: 75px;
+  border-radius: 50px;
+  box-shadow: 0 -1px 1px 0 rgba(0, 0, 0, .5), 0px 1px 1px 0 rgba(255, 255, 255, 1);
+  background: rgb(189, 191, 193);
+  background: linear-gradient(to bottom, rgba(189, 191, 193, 1) 0%, rgba(249, 251, 254, 1) 100%);
+}
+
+.toggle > div > input[type=checkbox] {
+  position: absolute;
+  opacity: 0;
+  top: -3px;
+  left: 17px;
+  width: 130px;
+  height: 55px;
+  z-index: 5;
+}
+
+.toggle > div > input[type=checkbox] ~ div {
+  width: 130px;
+  height: 55px;
+  border-radius: 50px;
+  border: 1px solid #979797;
+  box-shadow: inset 5px 0 0 0 rgba(0, 0, 0, .1), inset -5px 0 0 0 rgba(0, 0, 0, .1), inset -6px 0 0 0 rgba(255, 255, 255, .5), inset -4px 6px 11px -5px rgba(0, 0, 0, .2), inset 1px 1px 0 0 rgba(255, 255, 255, 1), -6px 4px 11px -7px rgba(0, 0, 0, .5);
+  background: rgb(253, 252, 251);
+  background: linear-gradient(to right, rgba(253, 252, 251, 1) 37%, rgba(229, 229, 229, 1) 61%);
+}
+
+.toggle > div > input[type=checkbox]:checked ~ div {
+  box-shadow: inset -5px 0 0 0 rgba(0, 0, 0, .1), inset 5px 0 0 0 rgba(0, 0, 0, .1), inset 6px 0 0 0 rgba(255, 255, 255, .5), inset -4px 6px 11px -5px rgba(0, 0, 0, .2), inset 1px 1px 0 0 rgba(255, 255, 255, 1), -6px 4px 11px -7px rgba(0, 0, 0, .5);
+  background: rgb(229, 229, 229);
+  background: linear-gradient(to right, rgba(229, 229, 229, 1) 39%, rgba(253, 252, 251, 1) 63%);
+}
+
+.toggle > div > input[type=checkbox] ~ div:before {
+  content: attr(data-unchecked);
+  display: block;
+  position: absolute;
+  border-radius: 10px;
+  top: 27px;
+  left: 30px;
+}
+
+.toggle > div > input[type=checkbox] ~ div:after {
+  content: attr(data-checked);
+  color: #6A1B9A;
+  text-shadow: 0 1px 0 #fff, 0px 0 7px #df0000;
+  filter: dropshadow(color=#df0000, offx=0, offy=0);
+  display: block;
+  position: absolute;
+  border-radius: 10px;
+  top: 27px;
+  left: 100px;
+}
+
+.toggle > div > input[type=checkbox]:checked ~ div:before {
+  color: #6A1B9A;
+  text-shadow: 0 1px 0 #fff, 0px 0 7px #df0000;
+  filter: dropshadow(color=#df0000, offx=0, offy=0);
+}
+
+.toggle > div > input[type=checkbox]:checked ~ div:after {
+  color: #000;
+  text-shadow: none;
+  filter: dropshadow(none);
+}

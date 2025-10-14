@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-const BackButton = ({ label = "← Back", destination=-1, confirm }) => {
+const BackButton = ({ label = (<ion-icon name="chevron-back-outline"></ion-icon>), destination=-1, confirm }) => {
   const navigate = useNavigate();
 
   const handleClick = (e) => {
@@ -16,7 +16,7 @@ const BackButton = ({ label = "← Back", destination=-1, confirm }) => {
   };
 
   return (
-    <button onClick={handleClick}>{label}</button>
+    <button onClick={handleClick} className='special'>{label}</button>
   );
 };
 

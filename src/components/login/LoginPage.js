@@ -54,14 +54,16 @@ const LoginPage = () => {
     }
 
     return loading ? <Loading /> : (
-        <div>
-            <BackButton label="Go Home" destination="/"/>
-            <h1>Welcome, {role==='teacher'?'Sculptor of Young Minds':'Future Leader'}</h1>
+        <div id="login">
+            <BackButton />
+            <h2>Welcome, {role==='teacher'?'Sculptor of Young Minds':'Future Leader'}</h2>
+            <img src="/graduation-cap.png" alt="a graduation cap" />
+            <p>Input your access code below</p>
             <input 
                 value={accessCode}
                 onChange={e=>setAccessCode(e.target.value)}
             />
-            <button onClick={grantAccess}>Enter</button>
+            <button onClick={grantAccess} className="normal">Enter</button>
 
             <ErrorModal status={!!error} closer={()=>setError('')} error={error} />
         </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import Modal from 'react-modal';
+import './styles/style.scss';
 
 
 Modal.setAppElement(document.getElementById('root'))

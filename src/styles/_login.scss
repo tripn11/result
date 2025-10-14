@@ -1,0 +1,47 @@
+@use 'variables' as v;
+
+#login {
+
+    >* {
+        text-align: center;
+    }
+
+    button.special {
+        ion-icon {
+            font-size: 1.2rem;
+        }
+    }
+
+
+    h2 {
+        margin: 1rem auto;
+    }
+
+    > img {
+        width: 7rem;
+        display: block;
+        margin: 1rem auto;
+        border: 3px solid v.$color-background;
+        padding: 0.8rem;
+        border-radius: 50%;
+        box-shadow: v.$shadow;
+    }
+
+    input {
+        display: block;
+        width: 90%;
+        margin: 1rem auto;
+        text-align: left;
+    }
+
+    >button.normal {
+        display: block;
+        margin: 2rem auto;
+        width: 70%;
+        padding: 0.8rem;
+    }
+
+
+
+
+}

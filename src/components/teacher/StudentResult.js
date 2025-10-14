@@ -95,8 +95,6 @@ const StudentResult = () => {
     }
 
     const resultSaver = async () => {
-        console.log(classDetails)
-        console.log(classDetails.teachersTitle)
         setLoading(true);
         const finalResult = {
             ...result,

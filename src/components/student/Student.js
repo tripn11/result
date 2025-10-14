@@ -16,15 +16,23 @@ const Student = () => {
     const [details, setDetails] = useState({
         class: student.class,
         term: student.term,
-        type: 'ca'
+        type: 'term'
     });
 
     const changeHandler = e => {
         const { name, value } = e.target;
-        setDetails(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        if(name==="type") {
+            setDetails(prev => ({
+                ...prev,
+                type:e.target.checked?'term':"ca"
+            }))
+        }else {
+            setDetails(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        }
+
     };
 
     const resultViewer = async () => {
@@ -57,63 +65,63 @@ const Student = () => {
     if(error) return <ErrorModal status={!!error} closer={() => setError(null)} error={error || "An error occurred"} />
     if(loading) return <Loading />
     return (
-        <div>
-            <h1>Welcome {student.fullName}</h1>
+        <div id="student">
+            <header>
+                <h1>{student.schoolName}</h1>
+            </header>
 
-            <div>
-                <label>
-                    <input
-                        type="radio"
-                        name="type"
-                        value="ca"
-                        checked={details.type === "ca"}
-                        onChange={changeHandler}
-                    />
-                    CA
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        name="type"
-                        value="exam"
-                        checked={details.type === "exam"}
-                        onChange={changeHandler}
-                    />
-                    Exam
-                </label>
+            <p>Welcome {student.fullName}</p>
+
+            <div className="fx-block">
+                <div className="toggle">
+                    <div>
+                        <input
+                            type="checkbox"
+                            id="toggles"
+                            name='type'
+                            checked={details.type === "term"}
+                            onChange={changeHandler}
+                        />
+                        <div data-unchecked="TERM" data-checked="CA"></div>
+                    </div>
+                </div>
             </div>
 
-            <label htmlFor="class">Class</label>
-            <select
-                id="class"
-                name="class"
-                value={details.class}
-                onChange={changeHandler}
-            >
-                {student.classes.map(option => (
-                    <option key={option} value={option}>{option}</option>
-                ))}
-            </select>
+            <div className="filters">
+                <label htmlFor="class">Class</label>
+                <select
+                    id="class"
+                    name="class"
+                    value={details.class}
+                    onChange={changeHandler}
+                >
+                    {student.classes.map(option => (
+                        <option key={option} value={option}>{option}</option>
+                    ))}
+                </select>
+            </div>
 
+            <div className="filters">
+                <label htmlFor="term">Term</label>
+                <select
+                    id="term"
+                    name="term"
+                    value={details.term}
+                    onChange={changeHandler}
+                >
+                    <option value="first">First</option>
+                    <option value="second">Second</option>
+                    <option value="third">Third</option>
+                </select>
+            </div>
 
+            <div className="student-buttons">
+                <button onClick={resultViewer}>View Result</button>
+                <button onClick={() => dispatch(logout())}>Logout</button>
+            </div>
 
-            <label htmlFor="term">Term</label>
-            <select
-                id="term"
-                name="term"
-                value={details.term}
-                onChange={changeHandler}
-            >
-                <option value="first">First</option>
-                <option value="second">Second</option>
-                <option value="third">Third</option>
-            </select>
-
-            <button onClick={resultViewer}>View Result</button>
-            <button onClick={() => dispatch(logout())}>Logout</button>
             {pdfUrl && (
-                    <div>
-                        <button onClick={() => setPdfUrl(null)}>Close</button>
+                    <div className="actual-result">
                         <iframe
                         src={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0`}
                             width="100%"
@@ -121,6 +129,7 @@ const Student = () => {
                             style={{ border: "none" }}
                             title="Result PDF"
                         />
+                        <button onClick={() => setPdfUrl(null)}>Close</button>
                     </div>
                 )}
         </div>
