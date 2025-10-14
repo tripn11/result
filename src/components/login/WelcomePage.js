@@ -4,7 +4,7 @@ const WelcomePage = ()=>{
     const navigate = useNavigate();
 
     const logger = (e) => {
-        const role = e.target.textContent.toLowerCase()
+        const role = e.currentTarget.querySelector("span").textContent.toLowerCase();
         if(role==='admin') {
             navigate('/login')
         }else if(role==='input result') {
