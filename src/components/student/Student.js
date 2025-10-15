@@ -4,11 +4,16 @@ import { logout } from '../../reducers/authReducer';
 import axios from 'axios';
 import Loading from '../Loading';
 import ErrorModal from "../modals/ErrorModal";
+import * as pdfjs from 'pdfjs-dist/build/pdf';
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+
+
 
 const Student = () => {
     const student = useSelector(state => state.students.student);
     const accessCode = useSelector(state => state.auth.token);
-    const [pdfUrl, setPdfUrl] = useState(null);
+    const [imageUrl, setImageUrl] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const dispatch = useDispatch();
@@ -21,12 +26,12 @@ const Student = () => {
 
     const changeHandler = e => {
         const { name, value } = e.target;
-        if(name==="type") {
+        if (name === "type") {
             setDetails(prev => ({
                 ...prev,
-                type:e.target.checked?'term':"ca"
+                type: e.target.checked ? 'term' : "ca"
             }))
-        }else {
+        } else {
             setDetails(prev => ({
                 ...prev,
                 [name]: value
@@ -38,22 +43,42 @@ const Student = () => {
     const resultViewer = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(host+"/result", {
+            setImageUrl(null);
+
+            const response = await axios.get(host + "/result", {
                 params: {
-                    term:details.term,
+                    term: details.term,
                     className: details.class,
                     type: details.type,
                 },
                 headers: {
                     Authorization: `Bearer ${accessCode}`,
-                    Role:"student"
+                    Role: "student"
                 },
+                responseType: "arraybuffer"
             });
-            const fileObj = response.data[0].file;
-            const byteArray = new Uint8Array(Object.values(fileObj));
-            const blob = new Blob([byteArray], { type: "application/pdf" });
-            const fileURL = URL.createObjectURL(blob);
-            setPdfUrl(fileURL);
+
+
+            const pdfData = new Uint8Array(response.data);
+            const pdf = await pdfjs.getDocument({ data: pdfData }).promise;
+            
+            const page = await pdf.getPage(1);
+
+            const viewport = page.getViewport({ scale:1.5 });
+
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            const renderContext = {
+                canvasContext: context,
+                viewport: viewport,
+            };
+            await page.render(renderContext).promise;
+
+            const imgDataUrl = canvas.toDataURL('image/png');
+            setImageUrl(imgDataUrl);
 
         } catch (e) {
             setError(e.response?.data || e.message);
@@ -62,16 +87,23 @@ const Student = () => {
         }
     };
 
-    if(error) return <ErrorModal status={!!error} closer={() => setError(null)} error={error || "An error occurred"} />
-    if(loading) return <Loading />
+    if (error) return <ErrorModal status={!!error} closer={() => setError(null)} error={error || "An error occurred"} />
+    if (loading) return <Loading />
+    
     return (
         <div id="student">
+            {imageUrl && (
+                 <div className="result-image-container">
+                    <img src={imageUrl} alt="Student Result" style={{ width: "100%", height: "auto", border: "1px solid #ccc" }} />
+                 </div>
+            )}
+            
             <header>
                 <h1>{student.schoolName}</h1>
             </header>
 
             <p>Welcome {student.fullName}</p>
-
+            
             <div className="fx-block">
                 <div className="toggle">
                     <div>
@@ -119,19 +151,6 @@ const Student = () => {
                 <button onClick={resultViewer}>View Result</button>
                 <button onClick={() => dispatch(logout())}>Logout</button>
             </div>
-
-            {pdfUrl && (
-                    <div className="actual-result">
-                        <iframe
-                        src={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0`}
-                            width="100%"
-                            height="600px"
-                            style={{ border: "none" }}
-                            title="Result PDF"
-                        />
-                        <button onClick={() => setPdfUrl(null)}>Close</button>
-                    </div>
-                )}
         </div>
     );
 }
