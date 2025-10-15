@@ -43,7 +43,6 @@ const Student = () => {
     const resultViewer = async () => {
         try {
             setLoading(true);
-            setImageUrl(null);
 
             const response = await axios.get(host + "/result", {
                 params: {
@@ -93,8 +92,9 @@ const Student = () => {
     return (
         <div id="student">
             {imageUrl && (
-                 <div className="result-image-container">
-                    <img src={imageUrl} alt="Student Result" style={{ width: "100%", height: "auto", border: "1px solid #ccc" }} />
+                 <div className="actual-result">
+                    <img src={imageUrl} alt="Student Result" />
+                    <button onClick={()=>setImageUrl(null)}>Close</button>
                  </div>
             )}
             
@@ -104,7 +104,7 @@ const Student = () => {
 
             <p>Welcome {student.fullName}</p>
             
-            <div className="fx-block">
+            {!imageUrl && <div className="fx-block">
                 <div className="toggle">
                     <div>
                         <input
@@ -117,7 +117,7 @@ const Student = () => {
                         <div data-unchecked="TERM" data-checked="CA"></div>
                     </div>
                 </div>
-            </div>
+            </div>}
 
             <div className="filters">
                 <label htmlFor="class">Class</label>
