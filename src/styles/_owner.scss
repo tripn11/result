@@ -1,0 +1,73 @@
+#owner {
+    h1 {
+        margin-left: 2rem;
+    }
+
+    h2 {
+        text-align: center;
+        text-decoration: underline;
+        text-underline-offset: 0.5rem;
+    }
+
+    .check-all {
+        display: flex;
+        justify-content: right;
+        font-weight: bold;
+        width: 80%;
+        margin: 1rem auto;
+        gap: 1rem;
+        font-size: 1.3rem;
+
+        input {
+            width: 2%;
+            &:focus {
+                box-shadow: none;
+            }
+        }
+    }
+
+    ol {
+        > li {
+            width: 80%;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 15% 55% 15% 15%;
+            padding: 1rem 0;
+            border-bottom: 1px solid gainsboro;
+
+            &:first-child {
+                font-weight: bold;
+
+                
+            }
+
+            > span:nth-child(2) {
+                text-transform: capitalize;
+            }
+
+            >span:nth-child(3),
+            span:last-child {
+                text-align:center;
+            }
+
+            input {
+                &:focus {
+                    box-shadow:none;
+                }
+            }
+        }
+    }
+
+    .buttons {
+        width: 50%;
+        display: flex;
+        gap: 3rem;
+        margin: 5rem auto;
+
+        >* {
+            font-size: 1rem;
+            flex-grow: 1;
+            padding: 0.5rem 0;
+        }
+    }
+}

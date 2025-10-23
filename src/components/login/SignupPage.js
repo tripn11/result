@@ -1,17 +1,16 @@
 import {useState} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
-import { useDispatch } from 'react-redux';
-import { setInitialSchool } from '../../reducers/schoolReducer';
-import { setAuthState } from '../../reducers/authReducer';
 import Loading from '../Loading';
+import ErrorModal from '../modals/ErrorModal';
+import SuccessModal from '../modals/SuccessModal';
 
 const SignupPage = ()=> {
     const [school,setSchool] = useState({name:'',email:'',password:''})
     const [showPassword, setShowPassword] = useState(false)
     const [error, setError] = useState({})
-    const [loading,setLoading] = useState(false)
-    const dispatch = useDispatch();
+    const [success, setSuccess] = useState(false);
+    const [loading,setLoading] = useState(false);
     const navigate = useNavigate();
     const host = process.env.REACT_APP_HOST
 
@@ -33,14 +32,14 @@ const SignupPage = ()=> {
 
         try {
             setLoading(true)
-            const schoolDetails = await axios.post(host+'/schools', school)
-            dispatch(setInitialSchool(schoolDetails.data.school))
-            dispatch(setAuthState({token:schoolDetails.data.token,type:'admin'}))
+            await axios.post(host+'/schools', school);
             setLoading(false)
-            navigate("/admin", { replace: true })//replace to prevent the user from going back into the signup page
+            setSuccess(true)
+            setTimeout(()=>{setSuccess(false)}, 5000);
+            setTimeout(()=>navigate("/login"),5000);
         } catch (e) {
             setLoading(false)
-            setError(e.response?.data?.error || {message:e.message})
+            setError(e.response?.data?.error || {message:e.response?.data || e.message})
         }
     }
 
@@ -70,6 +69,17 @@ const SignupPage = ()=> {
                         required
                     />
                     {error.email && <p>{error.email}</p>}
+
+                    <label htmlFor='phoneNumber'>Phone Number</label>
+                    <input 
+                        value={school.phoneNumber}
+                        onChange={inputHandler}
+                        name='phoneNumber'
+                        type='tel'
+                        required
+                    />
+                    {error.phoneNumber && <p>{error.phoneNumber}</p>}
+
                     <label htmlFor='password'>Password</label>
                     <input 
                         value={school.password}
@@ -83,6 +93,14 @@ const SignupPage = ()=> {
                     <button type='submit'>Sign up</button>
                 </form>
                 <p>Already have an account? <Link to='/login'>Login</Link></p>
+                <ErrorModal status={!!error.message} closer={()=>setError({message:""})} message={error.message} />
+                <SuccessModal status={success} 
+                    message={`
+                        Your account has been created successfully. 
+                        <br />Please subscribe to activate your account. 
+                        <br />Redirecting to login page...`
+                    } 
+                />
             </div>
         )
     }

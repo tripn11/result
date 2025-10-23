@@ -6,6 +6,7 @@ import { setInitialSchool } from '../../reducers/schoolReducer';
 import { setAuthState } from "../../reducers/authReducer";
 import Loading from "../Loading";
 import BackButton from "../BackButton";
+import ErrorModal from "../modals/ErrorModal";
 
 const AdminLoginPage = () => {
     const [loginDetails, setLoginDetails] = useState({email:'',password:''})
@@ -26,6 +27,9 @@ const AdminLoginPage = () => {
         try{
            setLoading(true)
            const schoolDetails =  await axios.post(host+'/schools/login',loginDetails)
+           if (schoolDetails.data.school.approved === false) {
+                throw new Error ("Your account is inactive. Please subscribe to activate your access");
+           }
            dispatch(setInitialSchool(schoolDetails.data.school))
            dispatch(setAuthState({token:schoolDetails.data.token,type:'admin'}))
         }catch (error) {
@@ -61,9 +65,10 @@ const AdminLoginPage = () => {
                     type="button" 
                     onMouseDown={()=>setShowPassword(true)}
                     onMouseUp={()=>setShowPassword(false)}
-                    >{showPassword?'--':'oo'}</button>
-                {error&&<p>{error}</p>}
+                    >{showPassword?'--':'oo'}
+                </button>
                 <button type="submit">Login</button>
+                <ErrorModal status={!!error} closer={()=>setError("")} error={error}/>
             </form>
             <p>New to result? <Link to='/signup'>Sign up</Link></p>
         </div>

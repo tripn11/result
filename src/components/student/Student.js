@@ -78,7 +78,6 @@ const Student = () => {
 
             const imgDataUrl = canvas.toDataURL('image/png');
             setImageUrl(imgDataUrl);
-
         } catch (e) {
             setError(e.response?.data || e.message);
         } finally {

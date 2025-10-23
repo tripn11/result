@@ -7,6 +7,9 @@ import axios from 'axios';
 import { updateResult } from "../../reducers/resultReducer";
 import SuccessModal from "../modals/SuccessModal";
 import ErrorModal from "../modals/ErrorModal";
+import * as pdfjs from 'pdfjs-dist/build/pdf';
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const StudentResult = () => {
     const { id } = useParams();
@@ -26,7 +29,7 @@ const StudentResult = () => {
     })
     const [modified, setModified] = useState(false); 
     const [success, setSuccess] = useState(false);
-    const [pdfUrl, setPdfUrl] = useState(null);
+    const [imageUrl, setImageUrl] = useState(null);
     const [error, setError] = useState(null);
     const totalStudents = useSelector(state => state.students.totalStudentsInClass);
     const dispatch = useDispatch();
@@ -62,7 +65,7 @@ const StudentResult = () => {
     const handleChange = (subject, grade, value) => {
         setUpdatedSubject(subject);
         setModified(true);
-        setPdfUrl(null)
+        setImageUrl(null)
         setSubjects(prevSubjects => {
             if(value==="-") {
                 const sub = {};
@@ -91,7 +94,7 @@ const StudentResult = () => {
     const commentChanger = (e) => {
         setModified(true);
         setComments({...comments, [e.target.name]: e.target.value})
-        setPdfUrl(null)
+        setImageUrl(null)
     }
 
     const resultSaver = async () => {
@@ -149,14 +152,27 @@ const StudentResult = () => {
                     Authorization: `Bearer ${accessCode}`,
                     Role:"teacher"
                 },
+                responseType: "arraybuffer"
             });
 
-            const fileObj = response.data[0].file;
-            const byteArray = new Uint8Array(Object.values(fileObj));
-            const blob = new Blob([byteArray], { type: "application/pdf" });
-            const fileURL = URL.createObjectURL(blob);
-            setPdfUrl(fileURL);
+            const pdfData = new Uint8Array(response.data);
+            const pdf = await pdfjs.getDocument({ data: pdfData }).promise;
+            const page = await pdf.getPage(1);
+            const viewport = page.getViewport({ scale:1.5 });
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            
+            const renderContext = {
+                canvasContext: context,
+                viewport: viewport,
+            };
 
+            await page.render(renderContext).promise;
+            
+            const imgDataUrl = canvas.toDataURL('image/png');
+            setImageUrl(imgDataUrl);
         } catch (e) {
             setError(e.response?.data || e.message);
         } finally {
@@ -168,6 +184,12 @@ const StudentResult = () => {
     if(error) return <ErrorModal status={!!error} closer={() => setError(null)} error={error || "An error occurred"} />
     return !result ?  <div><BackButton /> No result found </div> :
         <div>
+            {imageUrl && (
+                 <div className="actual-result">
+                    <img src={imageUrl} alt="Student Result" />
+                    <button onClick={()=>setImageUrl(null)}>Close</button>
+                 </div>
+            )}
             <BackButton confirm={modified} />
             <div>
                 <h2>{student.fullName}</h2>
@@ -280,18 +302,6 @@ const StudentResult = () => {
                 <SuccessModal status={success} message="Results saved successfully!" />
                 <button onClick={resultSaver} disabled={!modified}>Save</button>
                 {!modified && <button onClick={resultViewer}>View Result</button>}
-                {pdfUrl && (
-                    <div>
-                        <button onClick={() => setPdfUrl(null)}>Close</button>
-                        <iframe
-                        src={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0`}
-                            width="100%"
-                            height="600px"
-                            style={{ border: "none" }}
-                            title="Result PDF"
-                        />
-                    </div>
-                )}
             </div>
         </div>
 }
