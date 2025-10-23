@@ -27,9 +27,6 @@ const AdminLoginPage = () => {
         try{
            setLoading(true)
            const schoolDetails =  await axios.post(host+'/schools/login',loginDetails)
-           if (schoolDetails.data.school.approved === false) {
-                throw new Error ("Your account is inactive. Please subscribe to activate your access");
-           }
            dispatch(setInitialSchool(schoolDetails.data.school))
            dispatch(setAuthState({token:schoolDetails.data.token,type:'admin'}))
         }catch (error) {

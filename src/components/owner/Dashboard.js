@@ -60,7 +60,6 @@ const Dashboard = () => {
 
     const saver = async () => {
         try {
-            console.log(updatedSchools)
             setLoading(true);
             await axios.patch(host+'/overallSchools',updatedSchools, {
                 headers: {'Authorization': `Bearer ${token}`}
@@ -96,8 +95,9 @@ const Dashboard = () => {
                 <li>
                     <span>S/N</span>
                     <span>Schools</span>
-                    <span>Approved</span>
+                    <span>Phone Number</span>
                     <span>Population</span>
+                    <span>Approved</span>
                 </li>
                 {schools
                     .toSorted((a,b)=>(a.name.localeCompare(b.name)))
@@ -105,13 +105,14 @@ const Dashboard = () => {
                         <li key={school._id}>
                             <span>{index+1}</span>
                             <span>{school.name}</span>
+                            <span>{school.phoneNumber}</span>
+                            <span>{school.population}</span>
                             <input 
                                 type='checkbox' 
                                 checked= {mySchools[school.name]?.approved || false} 
                                 onChange={handler}
                                 name={school.name}
                             />
-                            <span>{school.population}</span>
                         </li>
                     )
                 )}
