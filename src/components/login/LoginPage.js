@@ -33,6 +33,7 @@ const LoginPage = () => {
                     teachersName: response.data.teachersName,
                     className: response.data.teachersClass,
                     timesSchoolOpened:response.data.timesSchoolOpened,
+                    schoolName: response.data.schoolName,
                 }));
                 dispatch(setTotalStudentsInClass(response.data.totalStudentsInClass));
             } else if(role==='student') {

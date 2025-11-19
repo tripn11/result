@@ -38,8 +38,11 @@ const AdminLoginPage = () => {
 
 
     return loading?<Loading />:(
-        <div>
-            <BackButton label="Go Home" destination="/"/>
+        <div id="admin-login">
+            <header>
+                <BackButton label="Go Home" destination="/"/>
+                <img src='/favicon/apple-touch-icon.png' alt="logo" />
+            </header>
             <form onSubmit={formHandler}>
                 <h2>Login as Admin</h2>
                 <label htmlFor="email">Email</label>
@@ -51,25 +54,25 @@ const AdminLoginPage = () => {
                     required
                 />
                 <label htmlFor="password">Password</label>
-                <input 
-                    value={loginDetails.password}
-                    onChange={inputHandler}
-                    type={showPassword?'text':'password'}
-                    name="password"
-                    required
-                />
-                <button 
-                    type="button" 
-                    onMouseDown={()=>setShowPassword(true)}
-                    onMouseUp={()=>setShowPassword(false)}
-                    >{showPassword?'--':'oo'}
-                </button>
+                <div className="password-input">
+                   <input 
+                        value={loginDetails.password}
+                        onChange={inputHandler}
+                        type={showPassword?'text':'password'}
+                        name="password"
+                        required
+                    />
+                    <ion-icon 
+                        name={showPassword?"eye-off-outline":"eye-outline"} 
+                        onMouseDown={()=>setShowPassword(true)} 
+                        onMouseUp={()=>setShowPassword(false)}>
+                    </ion-icon> 
+                </div>
                 <button type="submit">Login</button>
                 <ErrorModal status={!!error} closer={()=>setError("")} error={error}/>
             </form>
             <p>New to result? <Link to='/signup'>Sign up</Link></p>
         </div>
-        
     )
 }
 

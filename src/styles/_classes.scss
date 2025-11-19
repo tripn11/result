@@ -1,0 +1,69 @@
+@use 'variables' as v;
+
+#classes {
+  width: 100%;
+  padding-bottom: 1rem;
+
+  > .section-navs {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 1rem;
+        padding: 0.6rem 1rem;
+        text-align: center;
+
+        a {
+            text-decoration: none;
+            color: v.$color-muted;        
+            padding-bottom: 0.4rem;
+            transition: v.$transition;
+            position: relative;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color:grey;
+            justify-self: center;
+
+            &:hover {
+                color: black;     
+            }
+
+            &.active {
+                color: v.$color-primary;     
+                font-weight: 600;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    bottom: -3px;
+                    width: 100%;
+                    height: 3px;
+                    background: v.$color-primary; 
+                    border-radius: 2px;
+                }
+            }
+        }
+    }
+
+    > button {
+        display: block;
+        margin: 2rem auto;
+        padding: 0.8rem 4rem;
+        border-radius: v.$radius;
+        border: none;
+        background: v.$color-primary;
+        color: v.$color-text-light;
+        cursor: pointer;
+        font-weight: 600;
+        transition: v.$transition;
+
+        &:disabled {
+            background: v.$color-border;
+            color: v.$color-text;
+            cursor: not-allowed;
+        }
+
+        &:not(:disabled):hover {
+            background: v.$color-muted;
+        }
+    }
+}

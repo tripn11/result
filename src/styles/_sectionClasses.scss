@@ -1,0 +1,284 @@
+@use 'variables' as v;
+
+#section-classes {
+    width: 100%;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    .classes-list,
+    .scale-list,
+    .subjects-list {
+        background: v.$color-surface;
+        padding: 0.8rem;
+        border-radius: v.$radius;
+        box-shadow: v.$shadow;
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+        margin-bottom: 2rem;
+
+        > button {
+            width: 100%;
+            padding: 0.6rem 0.9rem;
+            margin:2rem 0;
+            background-color: white;
+            color: v.$color-primary;
+            border-radius: 0;
+            border: 2px solid v.$color-primary;
+            cursor: pointer;
+            transition: v.$transition;
+
+            &:hover { 
+                background: v.$color-muted; 
+                color:v.$color-text-light;
+                border:none;
+            }
+        }
+    }
+
+    .scale-list {
+        h3 {
+            display:grid;
+            grid-template-columns: 60% 25%;
+        }
+    }
+
+    .class {
+        display: grid;
+        grid-template-columns: repeat(10, fr);
+        width: 100%;
+        gap: 0.75rem;
+        padding: 2rem 0;
+        border-bottom: 5px solid v.$color-border;
+        
+        input,
+        select {
+            padding: 0.5rem 0.6rem;
+            border-radius: v.$radius;
+            border: 1px solid v.$color-border;
+            background: v.$color-surface;
+            font-size: 0.92rem;
+            color: v.$color-text;
+            transition: v.$transition;
+
+            &:focus { 
+                outline: none; 
+                border-color: v.$color-primary; 
+            }
+        }
+
+        input[name="class"] {
+            grid-column: span 10;
+            font-weight: bold;
+            text-transform: capitalize;
+            text-align: center;
+            width: 90%;
+            justify-self: center;
+            border:none;
+        }
+
+        select[name="teachersTitle"] {
+            grid-column: span 1;
+        }
+
+        input[name="teachersName"] {
+            grid-column: span 9;
+        }
+
+        div.teachers-code{
+            grid-column: span 10;
+            position: relative;
+
+            ion-icon {
+                position: absolute;
+                right: 1rem;
+                top:0.6rem;
+
+                &:hover {
+                    color: v.$color-primary;
+                }
+            }
+            
+            .balloon {
+                display: none;
+                position:absolute;
+                right:1rem;
+                top:-0.8rem;
+                background-color: gray;
+                color: whitesmoke;
+                padding: 0.1rem 0.5rem;
+                font-size: 0.7rem;
+
+                &.copied {
+                    display: block;
+                }
+            }
+        }
+
+        button {
+           grid-column: span 5;
+           width: 90%;
+           padding: 0.6rem;
+        } 
+
+        button:last-child {
+            background-color: v.$color-danger;
+        }
+
+
+
+
+        @media (min-width: 768px) {
+            gap: 1rem;
+
+            input,
+            select {
+                font-size: 0.95rem;
+                padding: 0.55rem 0.7rem;
+            }
+        }
+    }
+
+
+  .grade {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 55% 20% 20%;
+    gap: 0.8rem;
+    align-items: center;
+    
+    &:last-child {
+        margin-top: 0.7rem;
+    }
+
+    input {
+      padding: 0.45rem 0.6rem;
+      border-radius: v.$radius;
+      border: 1px solid v.$color-border;
+      background: v.$color-surface;
+      font-size: 0.92rem;
+      color: v.$color-text;
+      text-transform: capitalize;
+
+      &:focus { outline: none; border-color: v.$color-primary; }
+    }
+
+    button {
+      justify-self: end;
+      width: 100%;
+      padding: 0.32rem 0.5rem;
+      background: v.$color-danger;
+      color: v.$color-text-light;
+      border: none;
+      border-radius: v.$radius;
+      cursor: pointer;
+      font-size: 0.85rem;
+      width: 3rem;
+      margin-right: 0.5rem;
+
+      ion-icon {
+        font-size: 1rem;
+      }
+
+      &:hover { background: #d32f2f; }
+    }
+  }
+
+  .subjects {
+    display: grid;
+    grid-template-columns: 80% 20%;
+    gap: 0.6rem;
+    align-items: center;
+
+    input {
+      padding: 0.45rem 0.6rem;
+      border-radius: v.$radius;
+      border: 1px solid v.$color-border;
+      background: v.$color-surface;
+      font-size: 0.92rem;
+      color: v.$color-text;
+      text-transform: capitalize;
+
+      &:focus { outline: none; border-color: v.$color-primary; }
+    }
+
+    button {
+      padding: 0.32rem 0.45rem;
+      background: v.$color-danger;
+      color: v.$color-text-light;
+      border: none;
+      border-radius: v.$radius;
+      cursor: pointer;
+      font-size: 0.85rem;
+      width: 3rem;
+      justify-self: right;
+      margin-right: 0.5rem;
+
+      ion-icon {
+        font-size: 1rem;
+      }
+
+      &:hover { background: #c62828; }
+    }
+  }
+
+//   @media (min-width: 768px) {
+//     padding: 2rem;
+//     gap: 2rem;
+
+//     h3 {
+//       grid-template-columns: repeat(3, 1fr);
+//       font-size: 1rem;
+//     }
+
+//     .classes-list,
+//     .scale-list,
+//     .subjects-list {
+//       padding: 1.25rem;
+//     }
+
+//     .class {
+//       grid-template-columns: 1fr 120px 1fr 1.2fr 140px 40px; /* matches fields: name, title select, teacher, code, change, remove */
+//       gap: 0.8rem;
+//       align-items: center;
+
+//       input, select {
+//         font-size: 0.95rem;
+//         padding: 0.5rem 0.7rem;
+//       }
+
+//       button {
+//         padding: 0.36rem 0.6rem;
+//         font-size: 0.9rem;
+//       }
+
+//       button.remove {
+//         background: #e57373;
+//         &:hover { background: #d32f2f; }
+//       }
+
+//       button.change-code {
+//         background: v.$color-primary;
+//         color: v.$color-text-light;
+//         &:hover { background: v.$color-muted; }
+//       }
+//     }
+
+//     .grade {
+//       grid-template-columns: 1fr 120px 40px;
+//       gap: 0.6rem;
+
+//       input { font-size: 0.95rem; }
+//       button { font-size: 0.9rem; }
+//     }
+
+//     .subjects {
+//       grid-template-columns: 1fr 40px;
+//       gap: 0.6rem;
+
+//       input { font-size: 0.95rem; }
+//     }
+//   }
+}

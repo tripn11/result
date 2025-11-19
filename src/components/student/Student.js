@@ -91,10 +91,10 @@ const Student = () => {
     return (
         <div id="student">
             {imageUrl && (
-                 <div className="actual-result">
+                <div className="actual-result">
                     <img src={imageUrl} alt="Student Result" />
                     <button onClick={()=>setImageUrl(null)}>Close</button>
-                 </div>
+                </div>
             )}
             
             <header>
@@ -103,7 +103,8 @@ const Student = () => {
 
             <p>Welcome {student.fullName}</p>
             
-            {!imageUrl && <div className="fx-block">
+            {!imageUrl && 
+            <div className="fx-block">
                 <div className="toggle">
                     <div>
                         <input

@@ -1,0 +1,115 @@
+@use 'variables' as v;
+@use 'sass:color';
+
+#student-list {
+    position: relative;
+    top: 4rem;
+    max-width: 600px;
+    margin: 0 auto;
+    background: v.$color-surface;
+    border-radius: v.$radius;
+    box-shadow: v.$shadow;
+    transition: v.$transition;
+    min-height: 100vh;
+    padding-bottom: 0.1rem;
+
+    > .teacher-welcome {
+        font-weight: 600;
+        font-family: v.$font-primary;
+        padding: 0.7rem 0;
+        color: v.$color-primary;
+        display: block;
+        text-align: center;
+    }
+
+    p {
+        font-style: italic;
+        margin: 0 0 2rem;
+        text-align: center;
+        color: v.$color-muted;
+    }
+
+    h3 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: v.$color-primary;
+    }
+
+    ol {
+        padding-left: 2rem;
+        overflow-x: hidden;
+        min-height: 40vh;
+
+        li {
+            margin-bottom: 1rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: v.$radius;
+            transition: v.$transition;
+            font-weight: 500;
+
+            &:hover {
+                background: v.$color-background;
+                color: color.scale(v.$color-primary, $lightness: -10%);
+                transform: translateX(5px);
+            }
+        }
+    }
+
+    .pages {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.6rem;
+        margin: 2rem auto 0;
+        flex-wrap: nowrap;
+
+        .page-numbers,
+        .arrow {
+            background: v.$color-surface;
+            border: 1px solid v.$color-border;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: v.$color-primary;
+            box-shadow: v.$shadow;
+            cursor: pointer;
+            transition: v.$transition;
+            user-select: none;
+
+            &:hover {
+                background: v.$color-primary;
+                color: v.$color-text-light;
+                transform: translateY(-3px);
+            }
+        }
+
+        .page-numbers.active {
+            border: 2px solid v.$color-muted;
+            background: v.$color-surface;
+            color: v.$color-primary;
+            transition: v.$transition;
+        }
+
+        .arrow {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: v.$color-muted;
+
+            &.disabled {
+                opacity: 0.4;
+                pointer-events: none;
+                cursor: default;
+            }
+        }
+    }
+
+    button {
+        display: block;
+        margin: 3rem auto;
+    }
+}

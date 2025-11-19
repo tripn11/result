@@ -1,0 +1,112 @@
+@use 'variables' as v;
+
+#admin-header {
+  position: relative;
+  font-family: v.$font-primary;
+
+  .menu-bar {
+    background: #fff;
+    box-shadow: v.$shadow;
+    padding: 1rem 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h2 {
+      color: v.$color-primary;
+      font-size: 1.2rem;
+      font-weight: 600;
+      text-transform: capitalize;
+      margin: 0;
+    }
+
+    ion-icon {
+      font-size: 1.8rem;
+      color: v.$color-text;
+      cursor: pointer;
+      transition: v.$transition;
+
+      &:hover {
+        color: v.$color-primary;
+      }
+    }
+  }
+
+  .options {
+    position: fixed;
+    top: 0;
+    left: -260px;
+    width: 260px;
+    height: 100vh;
+    background: v.$color-primary;
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    transition: v.$transition;
+    z-index: 2000;
+    color: v.$color-text-light;
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+
+      h3 {
+        font-size: 1.3rem;
+        color: v.$color-text-light;
+        margin: 0;
+      }
+
+      ion-icon {
+        font-size: 2rem;
+        color: v.$color-text-light;
+        cursor: pointer;
+      }
+    }
+
+    a {
+      display: flex;              // align icon + text
+      align-items: center;        // vertical alignment
+      gap: 0.6rem;                // spacing between icon + text
+
+      color: rgba(255,255,255,0.78); // slightly dimmer default
+      text-decoration: none;
+
+      font-size: 0.95rem;         // reduced font size
+      padding: 0.55rem 0.4rem;
+      border-radius: v.$radius;
+      transition: v.$transition;
+
+      ion-icon {
+        font-size: 1.3rem;
+        color: rgba(255,255,255,0.78); // match text
+      }
+
+      &.active {
+        background: rgba(255,255,255,0.18);
+        color: #fff;
+
+        ion-icon {
+          color: #fff;
+        }
+      }
+
+      &:hover {
+        background: rgba(255,255,255,0.25);
+        color: #fff;
+
+        ion-icon {
+          color: #fff;
+        }
+      }
+    }
+  }
+
+  &.open {
+    .options {
+      left: 0;
+    }
+  }
+}

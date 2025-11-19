@@ -21,13 +21,13 @@ const Subjects = props => {
     }
 
     return (
-        <div>
+        <div className='subjects'>
             <input 
                 value={subj}
                 onChange={changeHandler}
                 onBlur={updater}
             />
-            <button onClick={remover}>x</button>
+            <button onClick={remover}><ion-icon name="trash-outline"></ion-icon></button>
         </div>
     )
 }

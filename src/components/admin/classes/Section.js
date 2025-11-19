@@ -67,14 +67,8 @@ const Section = props => {
     }
 
     return (
-        <div>
-            <div>
-                <h3>
-                    <span>Classes</span>
-                    <span>Title</span>
-                    <span>Teacher's Name</span>
-                </h3>
-
+        <div id="section-classes">
+            <div className="classes-list">
                 {props.section.classes.map(eachClass=>(
                     <Class key={eachClass.code} 
                     details={eachClass} section={props.name} updater={updater} remover={remover}/>
@@ -82,7 +76,7 @@ const Section = props => {
                 <button onClick={()=>adder('classes')}>Add New Class</button>
             </div>
 
-            <div>
+            <div className="scale-list">
                 <h3>
                     <span>Category</span>
                     <span>Scale</span>
@@ -105,7 +99,7 @@ const Section = props => {
                 <button onClick={()=>adder('grading')}>Add Grade</button>
             </div>
 
-            <div>
+            <div className="subjects-list">
                 <h3>Subjects</h3>
                 {props.section.subjects.map(subject=>{
                     const code = subject.split("-")[1];

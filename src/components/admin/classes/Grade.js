@@ -27,12 +27,13 @@ const Grade = props => {
 
     if(props.remover) {
         return (
-            <div>
+            <div className='grade'>
                 <input 
                     value={grading.name}
                     onChange={handler}
                     onBlur={updater}
                     name="name"
+                    required
                 />
     
                 <input 
@@ -40,13 +41,14 @@ const Grade = props => {
                     onChange={handler}
                     onBlur={updater}
                     name="scale"
+                    required
                 />
-                <button onClick={remover}>x</button>
+                <button onClick={remover}><ion-icon name="trash-outline"></ion-icon></button>
             </div>
         )
     }else {
         return(
-            <div>
+            <div className='grade'>
                 <input value={name}/>
                 <input value={scale}/>
             </div>

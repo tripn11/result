@@ -5,7 +5,9 @@ const initialState = {
     classDetails: {
         teachersTitle:'',
         teachersName: '',
-        className: ''
+        className: '',
+        timesSchoolOpened:'',
+        schoolName:'',
     }
 }
 

@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from "react";
 import BackButton from "../BackButton";
 import Loading from '../Loading';
 import axios from 'axios';
@@ -8,302 +8,208 @@ import { updateResult } from "../../reducers/resultReducer";
 import SuccessModal from "../modals/SuccessModal";
 import ErrorModal from "../modals/ErrorModal";
 import * as pdfjs from 'pdfjs-dist/build/pdf';
+import Header from "./Header";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
+const calcTotals = subjectObj => {
+  const vals = Object.values(subjectObj);
+  if(vals.includes("-")) return { ca:"-", total:"-" };
+
+  const ca = vals.slice(0,-1).reduce((a,b)=>a+Number(b),0);
+  const total = vals.reduce((a,b)=>a+Number(b),0);
+  return { ca, total };
+}
+
 const StudentResult = () => {
-    const { id } = useParams();
-    const host = process.env.REACT_APP_HOST
-    const result = useSelector(state => state.results.results.find(result => result.owner === id));
-    const student = useSelector(state => state.students.studentsInClass.find(student => student._id === id));
-    const classDetails = useSelector(state => state.results.classDetails)
-    const accessCode = useSelector(state => state.auth.token);
-    const [resultType, setResultType] = useState('ca');
-    const [subjects, setSubjects] = useState(result ? result.subjects : null);
-    const grades = subjects ? Object.keys(Object.values(subjects)[0]) : null;
-    const [updatedSubject, setUpdatedSubject] = useState("")
-    const [comments, setComments] = useState({
-        teachers:result.teachersComment || '', 
-        principals:result.principalsComment || '',
-        attendance:result.attendance || ''
-    })
-    const [modified, setModified] = useState(false); 
-    const [success, setSuccess] = useState(false);
-    const [imageUrl, setImageUrl] = useState(null);
-    const [error, setError] = useState(null);
-    const totalStudents = useSelector(state => state.students.totalStudentsInClass);
-    const dispatch = useDispatch();
-    const initialTotal = {};
-    Object.keys(subjects).forEach(subject => {
-        const scores = Object.values(subjects[subject])
-        initialTotal[subject] = {
-            ca: scores.includes("-") ? "-":
-                scores.slice(0,-1)
-                .reduce((tot, val) => tot + Number(val), 0),
-            total: scores.some(value => value === "-") ? "-" : 
-                scores.reduce((tot, val) => tot + Number(val), 0)
-        }
-    })
-    const [totals, setTotals] = useState(initialTotal);
-    const [loading, setLoading] = useState(false);
+  const { id } = useParams();
+  const host = process.env.REACT_APP_HOST
+  const result = useSelector(state => state.results.results.find(r => r.owner === id));
+  const student = useSelector(state => state.students.studentsInClass.find(st => st._id === id));
+  const classDetails = useSelector(state => state.results.classDetails)
+  const accessCode = useSelector(state => state.auth.token);
+  const totalStudents = useSelector(state => state.students.totalStudentsInClass);
 
-    useEffect(()=> {
-        if(!updatedSubject) return;
-        const scores = Object.values(subjects[updatedSubject])
-        let ca, total;
-        if(scores.includes("-")){
-            ca = "-";
-            total = "-";
-        }else {
-            ca = scores.slice(0,-1).reduce((tot, val) => tot + Number(val), 0)
-            total = scores.reduce((tot, val) => tot + Number(val), 0)
-        }
+  const dispatch = useDispatch();
 
-        setTotals(prev=>({...prev,[updatedSubject]:{ca, total}}))            
-    },[subjects])
-    
-    const handleChange = (subject, grade, value) => {
-        setUpdatedSubject(subject);
-        setModified(true);
-        setImageUrl(null)
-        setSubjects(prevSubjects => {
-            if(value==="-") {
-                const sub = {};
-                Object.keys(subjects[subject]).forEach(grading => {
-                    sub[grading] = "-";
-                })
+  const [subjects, setSubjects] = useState(result?.subjects || {});
+  const [comments, setComments] = useState({
+    teachers: result.teachersComment || '',
+    principals: result.principalsComment || '',
+    attendance: result.attendance || ''
+  });
 
-                return {
-                    ...prevSubjects,
-                    [subject]: sub
-                }
-            }
+  const initTotals = useMemo(() => {
+    const subjectsTotal = {};
+    Object.keys(subjects).forEach(subject => subjectsTotal[subject] = calcTotals(subjects[subject]));
+    return subjectsTotal;
+  },[]);
 
-            return (
-                {
-                    ...prevSubjects,
-                    [subject]: {
-                        ...prevSubjects[subject],
-                        [grade]: value
-                    }
-                }
-            )
+  const [totals, setTotals] = useState(initTotals);
+  const [modified, setModified] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [imageUrl, setImageUrl] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (subject, grade, value) => {
+    setModified(true);
+    setImageUrl(null);
+
+    setSubjects(prev => {
+      let subjectToUpdate = {...prev[subject]};
+
+      if(value === "-"){
+        Object.keys(subjectToUpdate).forEach(scale => subjectToUpdate[scale]="-");
+      } else {
+        subjectToUpdate[grade] = value;
+      }
+
+      const next = {...prev, [subject]:subjectToUpdate};
+      setTotals(t => ({...t, [subject]: calcTotals(subjectToUpdate)}));
+      return next;
+    });
+  }
+
+  const commentChanger = (e) => {
+    setModified(true);
+    setComments({...comments, [e.target.name]:e.target.value});
+    setImageUrl(null);
+  }
+
+  const resultSaver = async () => {
+    setLoading(true);
+    const finalResult = {
+      ...result,
+      age: student.age,
+      population: totalStudents,
+      subjects,
+      attendance: comments.attendance,
+      teachersComment: comments.teachers,
+      principalsComment: comments.principals,
+      timesSchoolOpened: classDetails.timesSchoolOpened,
+      teachersName:classDetails.teachersName,
+      teachersTitle:classDetails.teachersTitle
+    }
+
+    try{
+      if(finalResult._id){
+        await axios.put(host+"/updateResult/"+finalResult._id, finalResult,{
+          headers:{ Authorization:`Bearer ${accessCode}` }
+        })
+        dispatch(updateResult({id:result.owner, result:finalResult}));
+      } else {
+        const newRes = await axios.post(host+"/addResult", finalResult,{
+          headers:{ Authorization:`Bearer ${accessCode}` }
         });
-    };
+        dispatch(updateResult({id:result.owner, result:newRes.data}));
+      }
 
-    const commentChanger = (e) => {
-        setModified(true);
-        setComments({...comments, [e.target.name]: e.target.value})
-        setImageUrl(null)
+      setModified(false);
+      setSuccess(true);
+      setTimeout(()=>setSuccess(false),2000);
+
+    }catch(e){
+      setError(e.response?.data||e.message);
+    }finally{
+      setLoading(false);
     }
+  }
 
-    const resultSaver = async () => {
-        setLoading(true);
-        const finalResult = {
-            ...result,
-            age: student.age,
-            population: totalStudents,
-            subjects,
-            attendance: comments.attendance,
-            teachersComment: comments.teachers,
-            principalsComment: comments.principals,
-            timesSchoolOpened: classDetails.timesSchoolOpened,
-            teachersName:classDetails.teachersName,
-            teachersTitle:classDetails.teachersTitle
-        }
+  const resultViewer = async type => {
+    try{
+      setLoading(true);
+      const response = await axios.get(host+"/result",{
+        params:{ _id:student._id, term:result.term, className:result.className, type },
+        headers:{ Authorization:`Bearer ${accessCode}`, Role:"teacher"},
+        responseType:"arraybuffer"
+      });
 
-        try {
-            if(finalResult._id) {
-                await axios.put(host+"/updateResult/"+finalResult._id, finalResult, {
-                    headers: {
-                        'Authorization': `Bearer ${accessCode}`
-                    }
-                });
-                dispatch(updateResult({id:result.owner, result: finalResult}));
-            } else {
-                const updatedResult = await axios.post(host+"/addResult", finalResult, {
-                    headers: {
-                        'Authorization': `Bearer ${accessCode}`
-                    }
-                });
-                dispatch(updateResult({id:result.owner, result: updatedResult.data}));
-            }
-            setModified(false);
-            setSuccess(true);
-            setTimeout(() => setSuccess(false), 2000);
-        } catch (error) {
-            setError(error.response?.data || error.message);
-        } finally {
-            setLoading(false);
-        }
+      const pdfData = new Uint8Array(response.data);
+      const pdf = await pdfjs.getDocument({data:pdfData}).promise;
+      const page = await pdf.getPage(1);
+      const viewport = page.getViewport({scale:1.5});
+      const canvas = document.createElement('canvas');
+      canvas.height = viewport.height; canvas.width = viewport.width;
+      await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
+      setImageUrl(canvas.toDataURL("image/png"));
+    }catch(e){
+      let msg;
+      if(e.response?.data && e.response.data instanceof ArrayBuffer){
+        msg = new TextDecoder().decode(e.response.data); 
+      }else{
+        msg = e.response?.data || e.message;
+      }
+      setError(msg);
     }
+    finally{ setLoading(false) }
+  }
 
-    const resultViewer = async () => {
-        try {
-            setLoading(true)
-            const response = await axios.get(host+"/result", {
-                params: {
-                    _id: student._id,
-                    term: result.term,
-                    className: result.className,
-                    type: resultType
-                },
-                headers: {
-                    Authorization: `Bearer ${accessCode}`,
-                    Role:"teacher"
-                },
-                responseType: "arraybuffer"
-            });
+  if(loading) return <Loading/>
+  if(error) return <ErrorModal status={!!error} closer={()=>setError(null)} error={error||"An error occurred"}/>
+  if(!result) return <div><BackButton/>No result found</div>
 
-            const pdfData = new Uint8Array(response.data);
-            const pdf = await pdfjs.getDocument({ data: pdfData }).promise;
-            const page = await pdf.getPage(1);
-            const viewport = page.getViewport({ scale:1.5 });
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-            
-            const renderContext = {
-                canvasContext: context,
-                viewport: viewport,
-            };
-
-            await page.render(renderContext).promise;
-            
-            const imgDataUrl = canvas.toDataURL('image/png');
-            setImageUrl(imgDataUrl);
-        } catch (e) {
-            setError(e.response?.data || e.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    if(loading) return <Loading />
-    if(error) return <ErrorModal status={!!error} closer={() => setError(null)} error={error || "An error occurred"} />
-    return !result ?  <div><BackButton /> No result found </div> :
-        <div>
-            {imageUrl && (
-                 <div className="actual-result">
-                    <img src={imageUrl} alt="Student Result" />
-                    <button onClick={()=>setImageUrl(null)}>Close</button>
-                 </div>
-            )}
-            <BackButton confirm={modified} />
-            <div>
-                <h2>{student.fullName}</h2>
-                <div>
-                    <input type="radio" id="ca" name="resultType" value="ca" checked={resultType === 'ca'} onChange={() => setResultType('ca')} />
-                    <label htmlFor="ca">CA</label>
-                    <input type="radio" id="term" name="resultType" value="term" checked={resultType === 'term'} onChange={() => setResultType('term')} />
-                    <label htmlFor="term">Term</label>
-                </div>
-
-                <div>
-                    <table>
-                        <thead>
-                            {resultType === 'ca'? 
-                                <tr>
-                                    <th>Subject</th>
-                                    {grades
-                                        .slice(0,-1)
-                                        .map(grade => <th key={grade}>{grade.split("-")[0]}</th>)}
-                                    <th>Total</th>
-                                </tr>:
-                                <tr>
-                                    <th>Subject</th>
-                                    <th>CA</th>
-                                    <th>Exam</th>
-                                    <th>Total</th>
-                                </tr>
-                            }
-                        </thead>
-
-                        <tbody>
-                            {Object.entries(subjects).map((subject, index) => {
-                                const subjectName = subject[0].split("-")[0];
-                                const examMax = Number([grades[grades.length-1].split("-")[1]]);
-
-                                return resultType === 'ca' ? (
-                                    <tr key={subject}>
-                                        <td>{index+1} {subjectName}</td>
-                                        {grades && grades.slice(0,-1).map(grade => (
-                                            <td key={grade}>
-                                                <select 
-                                                    value={subjects[subject[0]][grade]}
-                                                    onChange={e => handleChange(subject[0], grade, e.target.value)}
-                                                >
-                                                    {Array.from({ length: Number(grade.split("-")[1])})
-                                                        .map((_,i) => (
-                                                            <option key={i} value={Number(grade.split("-")[1]) - i}>{Number(grade.split("-")[1]) - i}</option>
-                                                        ))
-                                                    }
-                                                    <option value={0}>0</option>
-                                                    <option value="-">-</option>
-                                                </select>
-                                            </td>
-                                        ))}
-                                        <td>{totals[subject[0]].ca}</td>
-                                    </tr>
-                                ) : (
-                                    <tr key={subject}>
-                                        <td>{index+1} {subjectName}</td>
-                                        <td>{totals[subject[0]].ca}</td>
-                                        <td>
-                                            <select
-                                                value={subjects[subject[0]][grades[grades.length - 1]]}
-                                                onChange={e => handleChange(subject[0], grades[grades.length - 1], e.target.value)}
-                                            >
-                                                {Array.from({ length: examMax })
-                                                    .map((_,i) => (
-                                                        <option key={i} value={examMax - i}>{examMax - i}</option>
-                                                    ))
-                                                }
-                                                <option value={0}>0</option>
-                                                <option value="-">-</option>
-                                            </select>
-                                        </td>
-                                        <td>{totals[subject[0]].total}</td>
-                                    </tr>
-                                )
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-                <div>
-                    <label>Attendance:</label>
-                    <input 
-                        type="number" 
-                        value={comments.attendance} 
-                        onChange={commentChanger} 
-                        name="attendance" />
-                </div>
-                <div>
-                    <div>
-                        <label>Teacher's Comment:</label>
-                        <textarea
-                            value={comments.teachers}
-                            onChange={commentChanger}
-                            maxLength={300}
-                            name="teachers"
-                        />
-                    </div>
-                    <div>
-                        <label>Principal's Comment:</label>
-                        <textarea
-                            value={comments.principals} 
-                            onChange={commentChanger} 
-                            maxLength={300} 
-                            name="principals"
-                        />
-                    </div>
-                </div>
-                <SuccessModal status={success} message="Results saved successfully!" />
-                <button onClick={resultSaver} disabled={!modified}>Save</button>
-                {!modified && <button onClick={resultViewer}>View Result</button>}
-            </div>
+  return (
+    <div id="student-result">
+      {imageUrl && (
+        <div className="actual-result">
+          <img src={imageUrl} alt="Student Result"/>
+          <button onClick={()=>setImageUrl(null)}>Close</button>
         </div>
+      )}
+
+      <Header content={student.fullName}/>
+      <BackButton confirm={modified}/>
+
+      <div className={`result-form ${imageUrl ? 'invincible' : ''}`}>
+        {Object.entries(subjects).map(([subject,data])=>(
+          <div key={subject}>
+            <h3>{subject.split("-")[0]}</h3>
+            {Object.entries(data).map(([grade,val]) => (
+              <div key={grade} className="subject-grade">
+                <label>{grade.split("-")[0]}</label>
+                <select
+                  value={val}
+                  onChange={e => handleChange(subject, grade, e.target.value)}
+                >
+                  {Array.from({length:grade.split("-")[1]}).map((_,i)=>{
+                    const score = Number(grade.split("-")[1])-i;
+                    return <option key={score} value={score}>{ score }</option>
+                  })}
+                  <option value="0">0</option>
+                  <option value="-">-</option>
+                </select>
+              </div>
+            ))}
+            <div>
+              <div><span>CA:</span><span>{totals[subject].ca}</span></div>
+              <div><span>Total:</span><span>{totals[subject].total}</span></div>
+            </div>
+          </div>
+        ))}
+
+        <div className="extra-details">
+          <label>Attendance</label>
+          <input type="number" value={comments.attendance} onChange={commentChanger} name="attendance"/>
+        </div>
+
+        <div className="extra-details">
+          <label>Teacher's Comment</label>
+          <textarea value={comments.teachers} onChange={commentChanger} maxLength={300} name="teachers"/>
+        </div>
+
+        <div className="extra-details">
+          <label>Principal's Comment</label>
+          <textarea value={comments.principals} onChange={commentChanger} maxLength={300} name="principals"/>
+        </div>
+
+        <SuccessModal status={success} message="Results saved successfully!" />
+        <button onClick={resultSaver} disabled={!modified}>Save</button>
+        {!modified && <button onClick={()=>resultViewer("ca")}>View CA Result</button>}
+        {!modified && <button onClick={()=>resultViewer("term")}>View Exam Result</button>}
+      </div>
+    </div>
+  )
 }
 
 export default StudentResult;

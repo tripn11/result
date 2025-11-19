@@ -133,7 +133,8 @@ const Basics = () => {
 
 
     return loading?<Loading />:(
-        <div>
+        <div id='basics'>
+            <h2>{schoolDetails.name}</h2>
             <form onSubmit={schoolDetailSaver}>
                 <label htmlFor='phone-number'>Phone Number</label>
                 <input 
@@ -212,8 +213,10 @@ const Basics = () => {
 
                 <button type='submit' disabled={!isModified} > Save </button>
             </form>
-            <button type='button' onClick={logger}> Logout </button>
-            <button type='button' onClick={()=>logger("all")}> Logout on all devices </button>
+            <div className='logger-container'>
+                <button type='button' className='logger' onClick={logger} > Logout </button>
+                <button type='button' className='logger' onClick={()=>logger("all")} > Logout on all devices </button>
+            </div>
         </div>
     )
 }
