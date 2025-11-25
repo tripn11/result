@@ -120,17 +120,20 @@ const Students = () => {
     }
     
     return (
-        <div>
+        <div id="admin-students">
             <div>
-                <NavLink to="/admin/students">Nursery</NavLink>
+                <NavLink to="/admin/students" end>Nursery</NavLink>
                 <NavLink to="/admin/students/primary">Primary</NavLink>
                 <NavLink to="/admin/students/jss">Junior Sec</NavLink>
                 <NavLink to="/admin/students/ss">Senior Sec</NavLink>            
             </div>
-            <div>Total number of students:{totalStudentsInSchool}</div>
+            <div><span>Total students in school:</span><span>{totalStudentsInSchool}</span></div>
             <Outlet />
-            {totalStudentsInSchool>0 && <button onClick={codeResetter}>Reset Student Codes</button>}
-            {totalStudentsInSchool>0 && <button onClick={()=>setWarning(true)}>Promote All Students</button>}
+            <div className="all-students-action">
+                {totalStudentsInSchool>0 && <button onClick={codeResetter}>Reset All Student Codes</button>}
+                {totalStudentsInSchool>0 && <button onClick={()=>setWarning(true)}>Promote All Students</button>}
+            </div>
+
 
             <WarningModal 
                 status={warning} 

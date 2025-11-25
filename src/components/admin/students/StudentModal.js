@@ -20,6 +20,7 @@ const StudentModal = props => {
     const dispatch = useDispatch();
     const [deleteModal, setDeleteModal] = useState(false);
     const [changed, setChanged] = useState(false);
+    const [copied, setCopied] = useState(false)
 
     const today = new Date().toISOString().split('T')[0];
     
@@ -166,27 +167,31 @@ const StudentModal = props => {
         }
     };
 
-    const deleteModalController = () => {
-        if(deleteModal){
-            setDeleteModal(false);
-        }else {
-            setDeleteModal(true);
-        }
-    }
-
     const codeChanger = () => {
         setChanged(true);
         setStudent(prev=>({...prev,code:codeGenerator(7)}))
+    }
+
+    const copier = async () => {
+        try {
+            await navigator.clipboard.writeText(student.code)
+            setCopied(true)
+            setTimeout(() => setCopied(false), 2000)
+        }catch(err) {
+            alert("Failed to copy: ", err);
+        }
     }
 
     return (
         <Modal
             isOpen={props.state}
             onRequestClose={closeHandler}
+            className="student-modal"
+            overlayClassName="student-modal-overlay"
         >
             {loading ? <Loading /> :
-                <div>
-                    <button onClick={closeHandler}>Close</button>
+                <div className="student-modal-content">
+                    <button onClick={closeHandler}><ion-icon name="close-circle-outline"></ion-icon></button>
                     <h2>{props.action} student</h2>
 
                     <div>
@@ -247,48 +252,61 @@ const StudentModal = props => {
                         <span>kg</span>
                     </div>
 
-                    <div>
-                        <label htmlFor="active">Active</label>
-                        <input
-                            type="radio"
-                            id="active"
-                            name="status"
-                            value="active"
-                            checked={student.status === 'active'}
-                            onChange={changeHandler}
-                        />
-                        <label htmlFor="graduated">Graduated</label>
-                        <input
-                            type="radio"
-                            id="graduated"
-                            name="status"
-                            value="graduated"
-                            checked={student.status === 'graduated'}
-                            onChange={changeHandler}
-                        />
+                    <div className="status">
+                        <label className="radio-label">
+                            <input
+                                type="radio"
+                                name="status"
+                                value="active"
+                                checked={student.status === 'active'}
+                                onChange={changeHandler}
+                            />
+                            <span>Active</span>
+                        </label>
+
+                        <label className="radio-label">
+                            <input
+                                type="radio"
+                                name="status"
+                                value="graduated"
+                                checked={student.status === 'graduated'}
+                                onChange={changeHandler}
+                            />
+                            <span>Graduated</span>
+                        </label>
                     </div>
 
                     {props.action === 'edit' && 
-                        <div>
-                            <span>{student.code}</span>
+                        <div className="code-display">
+                            <div>
+                                <span>{student.code}</span>
+                                <ion-icon name="copy-outline" onClick={copier} ></ion-icon>
+                                {copied && <span className="balloon">copied</span>}
+                            </div>
                             <button onClick={codeChanger}>Change Code</button>
                         </div>
                     }
-                    {props.action === 'edit' && <button onClick={deleteModalController}>Delete student</button>}
-
-                    <button onClick={studentSaver} disabled={!changed}>Save</button>
+                    <button className="student-saver" onClick={studentSaver} disabled={!changed}>Save</button>
+                    {props.action === 'edit' && <button className="student-deleter" onClick={()=>setDeleteModal(prev=>!prev)}>Delete student</button>}
+                    
                     <SuccessModal status={successStatus} message={`Student data has been ${props.action}ed successfully!`}/>
                     <ErrorModal status={errorStatus} closer={errorModalCloser} error={error} />
                 
                     <Modal 
                         isOpen={deleteModal}
-                        onRequestClose={deleteModalController}
+                        onRequestClose={()=>setDeleteModal(false)}
+                        className="delete-modal"
+                        overlayClassName="delete-modal-overlay"
                     >
-                        <p>Are you sure you want to delete this Student's profile?</p>
-                        <p>Please note that all the data associated with this student 
-                            will be permanently deleted</p>
-                        <button onClick={studentDeleter}>Yes</button>
-                        <button onClick={closeHandler}>No</button>
+                        <div className="delete-modal-content">
+                            <p>Are you sure you want to delete this Student's profile?</p>
+                            <p>Please note that all the data associated with this student 
+                                will be permanently deleted</p>
+                            <div className="button-group">
+                                <button onClick={studentDeleter}>Yes</button>
+                                <button onClick={()=>setDeleteModal(false)}>No</button>
+                            </div>
+                        </div>
                     </Modal>
                 </div>
             }

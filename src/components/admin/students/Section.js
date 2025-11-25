@@ -42,8 +42,8 @@ const Section =  props=> {
     }, [studentsInSection])
 
     return (
-        <div>
-            <div>Total Number of students in {props.name} section is : {studentsInSection.length}</div>
+        <div className="section-students">
+            <div><span>Total students in {props.name} section:</span> <span>{studentsInSection.length}</span></div>
             {classes.map((eachClass,index) => <Class key={index} eachClass={eachClass} 
                 students={studentsInClass[eachClass] || []} classes={classes} />)}
         </div>

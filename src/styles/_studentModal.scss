@@ -1,0 +1,191 @@
+@use "variables" as v; 
+
+.student-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+
+    .student-modal {
+        background-color: white;
+        width: 100%;
+        max-width: 500px; 
+        border-radius: v.$radius;
+        box-shadow: v.$shadow;
+        max-height: 90vh;
+        overflow-y: auto; 
+
+        .student-modal-content {
+            padding: 1rem;
+            position: relative;
+
+            > button:first-child {
+                position: absolute;
+                width: fit-content;
+                text-align: left;
+                top: -0.5rem;
+                left:0;
+                background: transparent;
+                border: none;
+                font-size: 1.5rem;
+                color: #888;
+                cursor: pointer;
+                transition: color 0.2s;
+                box-shadow: none;
+
+                &:hover {
+                    color: v.$color-primary;
+                }
+            }
+
+            h2 {
+                color: v.$color-primary;
+                margin-top: 0;
+                margin-bottom: 1.5rem;
+                text-transform: capitalize;
+                text-align: center;
+                font-size: 1.5rem;
+            }
+
+            > div {
+                margin-bottom: 1rem;
+                display: flex;
+                flex-direction: column;
+
+                label {
+                    font-size: 0.9rem;
+                    font-weight: 600;
+                    color: #555; 
+                    margin-bottom: 0.5rem;
+                }
+
+                input[type="text"],
+                input[type="date"],
+                input[type="number"],
+                select {
+                    padding: 0.75rem;
+                    border: 1px solid #ddd; 
+                    border-radius: 6px;
+                    font-size: 1rem;
+                    transition: border-color 0.3s;
+                    outline: none;
+
+                    &:focus {
+                        border-color: v.$color-primary;
+                        box-shadow: 0 0 0 2px rgba(v.$color-primary, 0.1);
+                    }
+                }
+
+                span {
+                    font-size: 0.8rem;
+                    color: #888;
+                    margin-top: 0.25rem;
+                    align-self: flex-end;
+                }
+
+                &.status { 
+                    flex-direction: row;
+                    align-items: center;
+                    gap: 1rem;
+
+                    input[type="radio"] {
+                        margin-right: 0.25rem;
+                        accent-color: v.$color-primary;
+                        box-shadow: none;
+                    }
+                    
+                    label {
+                        margin-bottom: 0;
+                        cursor: pointer;
+                    }
+                }
+            }
+
+            .code-display {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                background: #f9f9f9;
+                padding: 1rem 0.5rem;
+                border-radius: 6px;
+
+                > div {
+                    display: flex;
+                    gap: 0.8rem;
+                    align-items: center;
+                    position:relative;
+                    
+                    span {
+                        font-family: monospace;
+                        font-weight: bold;
+                        font-size: 1.2rem;
+                        color: #333;
+                    }
+
+                    .balloon {
+                        position:absolute;
+                        top:-1.2rem;
+                        right: 0;
+                        background-color: gray;
+                        color: whitesmoke;
+                        padding: 0.1rem 0.5rem;
+                        font-size: 0.7rem;
+                    }
+                }
+                 
+                button {
+                    font-size: 0.7rem;
+                    width: fit-content;
+                    margin: 0;
+                }
+            }
+
+            button {
+                width: 100%;
+                padding: 0.85rem;
+                margin-top: 1rem;
+                border: none;
+                border-radius: 6px;
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s ease;
+
+                &.student-saver {
+                    background-color: v.$color-primary;
+                    color: white;
+
+                    &:hover {
+                        filter: brightness(110%);
+                    }
+
+                    &:disabled {
+                        background-color: #ccc;
+                        cursor: not-allowed;
+                    }
+                }
+
+                &.student-deleter {
+                    background-color: transparent;
+                    border: 1px solid red;
+                    color: red;
+                    margin-bottom: 0.5rem;
+                    width: 45%;
+                    font-size: 0.8rem;
+
+                    &:hover {
+                        background-color: rgb(255, 235, 235);
+                    }
+                }
+            }
+        }
+    }
+}

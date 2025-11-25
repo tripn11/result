@@ -1,0 +1,226 @@
+@use 'variables' as v;
+
+#admin-students {
+  width: 100%;
+  min-height: 100vh;
+  padding: 1rem;
+
+  >.all-students-action {
+        display: flex;
+        gap: 1rem;
+        margin: 1rem 0;
+        margin: 3rem 0;
+
+        button {
+            background-color: v.$color-primary;
+            color: v.$color-text-light;
+            border: none;
+            border-radius: 0;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            box-shadow: v.$shadow;
+            transition: v.$transition;
+            font-size: 0.9rem;
+
+            &:first-child {
+                background-color: transparent;
+                color: v.$color-primary;
+                border: 1px solid v.$color-primary;
+
+                &:hover {
+                    color: v.$color-text-light;
+                }
+            }
+
+            &:hover {
+                background-color: darken(v.$color-primary, 10%);
+            }
+        }
+    }
+
+    >div:first-child {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 1rem;
+        padding: 0.1rem 0;
+        justify-content: space-around;
+
+        a {
+            text-decoration: none;
+            color: v.$color-muted;        
+            padding-bottom: 0.4rem;
+            transition: v.$transition;
+            position: relative;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color:grey;
+            justify-self: center;
+
+            &:hover {
+                color: black;     
+            }
+
+            &.active {
+                color: v.$color-primary;     
+                font-weight: 600;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    bottom: -3px;
+                    width: 100%;
+                    height: 3px;
+                    background: v.$color-primary; 
+                    border-radius: 2px;
+                }
+            }
+        }
+    }
+
+    >div:nth-child(2) {
+        position: relative;
+        display: flex;
+        width: fit-content;
+        padding: 0.5rem;
+        gap: 1rem;
+
+        span:first-child {
+            color:v.$color-primary;
+        }
+
+        span:last-child {
+            font-weight: 600;
+        }
+    }
+
+    .section-students {
+
+        >div:first-child {
+            position: relative;
+            display: flex;
+            width: fit-content;
+            padding: 0.5rem;
+            gap: 1rem;
+            font-size: 1rem;
+
+            span:first-child {
+                color:v.$color-primary;
+            }
+
+            span:last-child {
+                font-weight: 600;
+            }
+        }
+
+        .class-list {
+            background-color: white;
+            border-radius: v.$radius;
+            box-shadow: v.$shadow;
+            padding:0.7rem;
+            margin-bottom: 1rem;
+
+            > div:first-child {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                justify-content: space-between;
+                align-items: center;
+
+                div:first-child {
+                    font-weight: 600;
+                    text-transform: capitalize;
+                    flex-basis: 40%;
+                }
+
+                div:nth-child(3) {
+                    background-color: v.$color-background;
+                    width:4rem;
+                    border-radius: v.$radius;
+                    text-align: center;
+                    font-size: 0.7rem;
+                    text-align: center;
+                    color: v.$color-primary;
+                    padding: 0.3rem 0.2rem;
+                    align-self: center;
+                    flex-basis: 40%;
+                }
+
+                button {
+                    background-color: v.$color-primary;
+                    color: v.$color-text-light;
+                    border: none;
+                    border-radius: v.$radius;
+                    padding: 0.3rem 0.6rem;
+                    cursor: pointer;
+                    box-shadow: v.$shadow;
+                    transition: v.$transition;
+
+                    &.toggle-list {
+                        background-color: transparent;
+                        color: v.$color-primary;
+                        font-size: 1.2rem;
+                        padding: 0;
+                        box-shadow: none;
+
+                        &:hover {
+                            background-color: transparent;
+                        }
+                    }
+
+                    &:hover {
+                        background-color: darken(v.$color-primary, 10%);
+                    }
+                }
+            }
+            p.class-students-list {
+                border:none;
+            }
+
+            .class-students-list {
+                margin-top:2rem;
+                border: 1px solid v.$color-border;
+                border-radius: v.$radius;
+
+                h3 {
+                    display: grid;
+                    grid-template-columns: 10% 70% 20%;
+                    color: grey;
+                    font-weight: 300;
+                    font-size: 0.7rem;
+                    gap: 0.5rem;
+                    justify-content: space-around;
+                    padding:0.5rem;
+                    border-top-left-radius: v.$radius;
+                    border-top-right-radius: v.$radius;
+                    background-color: whitesmoke;
+                }
+
+                .admin-student {
+                    border-bottom: 1px solid v.$color-border;
+                    font-size: 0.8rem;
+                    display: grid;
+                    grid-template-columns: 10% 70% 20%;
+                    align-items: center;
+                    padding: 0.2rem 0;
+
+
+                    &:last-child {
+                        border-bottom: none;
+                    }
+
+                    >span:first-child {
+                        text-align: center;
+                    }
+
+                    >button {
+                        align-self: right;
+                        background-color: transparent;
+                        box-shadow: none;
+                        color: v.$color-primary;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -15,7 +15,7 @@ const Student = props => {
     }
 
     return (
-        <div>
+        <div className="admin-student">
             <span>{props.index + 1}</span>
             <span>{props.student.name.surName+' '+ props.student.name.firstName +
                 " "+props.student.name.otherName}</span> 

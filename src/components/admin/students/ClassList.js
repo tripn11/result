@@ -24,11 +24,12 @@ const ClassList = props => {
     }
 
     return (
-        <div>
+        <div className="class-list">
             <div>
-                {props.eachClass} {props.students.length} 
-                <button onClick={()=>studentAdder(true)}>Add Student</button>
-                <button onClick={listShower}>v</button>
+                <div>{props.eachClass}</div>
+                <button className="add-student" onClick={()=>studentAdder(true)}>+ Add Student</button>
+                <div>{props.students.length} students</div>
+                <button className="toggle-list"onClick={listShower}>{listOpen ? <ion-icon name="chevron-up-outline"></ion-icon> : <ion-icon name="chevron-down-outline"></ion-icon>}</button>
             </div>
 
             {listOpen && <ClassStudentsList students={props.students} classes={props.classes}/>}
