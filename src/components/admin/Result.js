@@ -19,7 +19,7 @@ const Result = () => {
                     .flatMap(section => section.classes.map(c => c.class));
 
     const [details, setDetails] = useState({
-        type: 'ca',
+        type: 'term',
         session,
         term,
         className: '',
@@ -31,6 +31,7 @@ const Result = () => {
     }
 
     const changeHandler = (e) => {
+        setResults([])
         setDetails({
             ...details,
             [e.target.name]: e.target.value
@@ -40,6 +41,9 @@ const Result = () => {
     const handleSearch = async() => {
         try {
             setLoading(true);
+            if(details.className==='') {
+                throw new Error ("Please select a class")
+            }
             const response = await axios.get(host+'/schoolResult', {
                 params:details,
                 headers: {
@@ -84,9 +88,9 @@ const Result = () => {
 
     if(error) return <ErrorModal status={!!error} closer={() => setError(null)} error={error}/>
     return loading?<Loading/>:(
-        <div>
+        <div id='admin-result'>
             <h1>Search Results</h1>
-            <div>
+            <div className='result-type'>
                 <label>
                     <input
                         type="radio"
@@ -95,23 +99,21 @@ const Result = () => {
                         onChange={changeHandler}
                         name='type'
                     />
-                    CA
+                    <span>CA</span>
                 </label>
                 <label>
                     <input
                         type="radio"
-                        value="exam"
-                        checked={details.type === 'exam'}
+                        value="term"
+                        checked={details.type === 'term'}
                         onChange={changeHandler}
                         name='type'
                     />
-                    Exam
+                    <span>Term</span>
                 </label>
             </div>
-            <div>
-                <label htmlFor='session'>
-                    Session:
-                </label>
+            <div className='session'>
+                <label htmlFor='session'>Session:</label>
                 <select
                     type="text"
                     value={details.session}
@@ -124,10 +126,8 @@ const Result = () => {
                     ))}
                 </select>
             </div>
-            <div>
-                <label htmlFor='term'>
-                    Term:
-                </label>
+            <div className='term'>
+                <label htmlFor='term'>Term:</label>
                 <select
                     type="text"
                     value={details.term}
@@ -135,27 +135,26 @@ const Result = () => {
                     name='term'
                     id='term'
                 >
-                    <option value='first'>first</option>
-                    <option value='second'>second</option>
-                    <option value='third'>third</option>
+                    <option value='first'>First</option>
+                    <option value='second'>Second</option>
+                    <option value='third'>Third</option>
                 </select>
             </div>
-            <div>
+            <div className='class-name'>
                 <label htmlFor='className'>Class:</label>
                 <select
                     value={details.className}
                     onChange={changeHandler}
                     name='className'
                     id='className'
-                    required
                 >
                     <option value=''>Select Class</option>
                     {classes.map(each=><option key={each} value={each}>{each}</option>)}
                 </select>
             </div>
-            <div>
+            <div className='student-name'>
                 <label htmlFor='studentName'>
-                    Student Name:
+                    <span>Student Name: </span>
                     <input
                         type="text"
                         value={details.studentName}

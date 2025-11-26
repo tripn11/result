@@ -206,7 +206,7 @@ const StudentResult = () => {
         <SuccessModal status={success} message="Results saved successfully!" />
         <button onClick={resultSaver} disabled={!modified}>Save</button>
         {!modified && <button onClick={()=>resultViewer("ca")}>View CA Result</button>}
-        {!modified && <button onClick={()=>resultViewer("term")}>View Exam Result</button>}
+        {!modified && <button onClick={()=>resultViewer("term")}>View Term Result</button>}
       </div>
     </div>
   )
