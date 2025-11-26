@@ -4,6 +4,7 @@ import axios from "axios";
 import Loading from '../Loading';
 import ErrorModal from '../modals/ErrorModal';
 import SuccessModal from '../modals/SuccessModal';
+import BackButton from "../BackButton";
 
 const SignupPage = ()=> {
     const [school,setSchool] = useState({name:'',email:'',password:''})
@@ -13,19 +14,12 @@ const SignupPage = ()=> {
     const [loading,setLoading] = useState(false);
     const navigate = useNavigate();
     const host = process.env.REACT_APP_HOST
-
-
     
     const inputHandler = e => {
         const { name, value } = e.target;
         setSchool({ ...school, [name]: value });
         setError({})
     };
-
-    const toggleVisibility = () => {
-        setShowPassword(prev=>!prev)
-    }
-
 
     const formHandler = async e => {
         e.preventDefault()
@@ -43,16 +37,18 @@ const SignupPage = ()=> {
         }
     }
 
-    if(error.message) {
-        return <div>{error.message}</div>
-    } else if(loading) {
+
+    if(loading) {
         return <Loading />
     }else {
         return (
-            <div>
+            <div id='signup'>
+                <header>
+                    <BackButton label="Go Home" destination="/"/>
+                    <img src='/favicon/apple-touch-icon.png' alt="logo" />
+                </header>
                 <form onSubmit={formHandler}>
                     <h2>Sign Up</h2>
-                    {error.duplicate && <p>{error.duplicate}</p>}
                     <label htmlFor='name'>Full Name of School</label>
                     <input 
                         value={school.name}
@@ -60,6 +56,7 @@ const SignupPage = ()=> {
                         name='name'
                         required
                     />
+                    {error.duplicate && <p className='error-message'>{error.duplicate}</p>}
                     <label htmlFor='email'>Email</label>
                     <input 
                         value={school.email}
@@ -68,7 +65,7 @@ const SignupPage = ()=> {
                         type='email'
                         required
                     />
-                    {error.email && <p>{error.email}</p>}
+                    {error.email && <p className='error-message'>{error.email}</p>}
 
                     <label htmlFor='phoneNumber'>Phone Number</label>
                     <input 
@@ -78,18 +75,27 @@ const SignupPage = ()=> {
                         type='tel'
                         required
                     />
-                    {error.phoneNumber && <p>{error.phoneNumber}</p>}
+                    {(error.phoneNumber && !error.email) && <p className='error-message'>{error.phoneNumber}</p>}
 
                     <label htmlFor='password'>Password</label>
-                    <input 
-                        value={school.password}
-                        onChange={inputHandler}
-                        name='password'
-                        type={showPassword?'text':'password'}
-                        required
-                    />
-                    <button type="button" onClick={toggleVisibility}>{showPassword?'--':'oo'}</button>
-                    {(error.password && !error.email) && <p>{error.password}</p>}
+                    <div className='password-input'>
+                        <input 
+                            value={school.password}
+                            onChange={inputHandler}
+                            name='password'
+                            type={showPassword?'text':'password'}
+                            required
+                        />
+                        <ion-icon 
+                            onClick={()=>setShowPassword(prev=>!prev)} 
+                            name={showPassword?"eye-off-outline":"eye-outline"}>
+                        </ion-icon>
+                    </div>
+                         
+                    {(error.password && !error.email && !error.phoneNumber) && <p className='error-message'>
+                        {error.password}
+                    </p>}
+
                     <button type='submit'>Sign up</button>
                 </form>
                 <p>Already have an account? <Link to='/login'>Login</Link></p>

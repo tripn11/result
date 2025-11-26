@@ -33,7 +33,7 @@
             }
 
             &:hover {
-                background-color: darken(v.$color-primary, 10%);
+                background-color: v.$color-text;
             }
         }
     }
@@ -169,7 +169,7 @@
                     }
 
                     &:hover {
-                        background-color: darken(v.$color-primary, 10%);
+                        background-color: v.$color-text;
                     }
                 }
             }
@@ -211,6 +211,10 @@
 
                     >span:first-child {
                         text-align: center;
+                    }
+
+                    >span:nth-child(2) {
+                        text-transform: capitalize;
                     }
 
                     >button {

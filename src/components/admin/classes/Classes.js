@@ -25,7 +25,6 @@ const Classes = () => {
                 e.returnValue=""
             }
         }
-        console.log(isModified)
         window.addEventListener("beforeunload",beforeExit)
         return () => {
             window.removeEventListener("beforeunload",beforeExit)

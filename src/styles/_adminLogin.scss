@@ -1,8 +1,9 @@
 @use 'variables' as v;
 
-#admin-login {
+#admin-login,
+#signup {
   font-family: v.$font-primary;
-  background: v.$color-background; // soft light purple background (#F9F7FD)
+  background: v.$color-background; 
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -62,6 +63,16 @@
         border-color: v.$color-primary;
         box-shadow: 0 0 0 3px rgba(106, 27, 154, 0.12);
       }
+    }
+
+    .error-message {
+      color:red;
+      font-size: 0.8rem;
+      margin:0;
+      text-align: left;
+      position: relative;
+      top:-1.5rem;
+      left:0.5rem;
     }
 
     .password-input {
@@ -154,4 +165,8 @@
       font-size: 1.05rem;
     }
   }
+}
+
+#signup {
+  padding-top: 5rem;
 }

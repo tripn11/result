@@ -1,0 +1,44 @@
+@use 'variables' as v;
+
+#not-found {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background: #fafafa; 
+  text-align: center;
+
+  h1 {
+    font-size: 5rem;
+    font-weight: 700;
+    color: v.$color-primary;
+    margin-bottom: 0.5rem;
+    line-height: 1;
+  }
+
+  p {
+    font-size: 1.2rem;
+    color: #444;
+    margin-bottom: 1.8rem;
+    max-width: 300px;
+  }
+
+  .back-home {
+    display: inline-block;
+    padding: 0.75rem 1.6rem;
+    background: v.$color-primary;
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.2s ease;
+
+    &:hover {
+      background: v.$color-accent;
+      color: #000;
+      transform: translateY(-2px);
+    }
+  }
+}

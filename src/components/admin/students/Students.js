@@ -31,7 +31,7 @@ const Students = () => {
             section = 'primary';
             break;
         case 'jss':
-            section = 'juniourSecondary';
+            section = 'juniorSecondary';
             break;
         case 'ss':
             section = 'seniorSecondary';
@@ -48,7 +48,7 @@ const Students = () => {
                 })
                 dispatch(setTotalStudentsInSchool(total.data.number))
             } catch (e) {
-                console.log(e)
+                setError(e.message)
             } finally {
                 setLoading(false);
             }

@@ -132,7 +132,7 @@ const StudentModal = props => {
             setTimeout(() => {
                 setSuccessStatus(false);
                 props.modalCloser();
-            }, 1500);
+            }, 2500);
         } catch (e) {
             setLoading(false);
             setErrorStatus(true);
@@ -159,7 +159,7 @@ const StudentModal = props => {
             setTimeout(() => {
                 setSuccessStatus(false);
                 props.modalCloser();
-            }, 1500);
+            }, 2500);
         } catch (e) {
             setLoading(false);
             setErrorStatus(true);
