@@ -16,7 +16,7 @@ const WelcomePage = ()=>{
 
     return (
         <div id='welcome'>
-            <img src='/favicon/apple-touch-icon.png' alt="logo" />
+            <img src='/logo.png' alt="logo" />
             <h1>Welcome to<br /> Nvolve Results</h1>
             <h2>How can I help you?</h2>
             <div>
@@ -24,7 +24,7 @@ const WelcomePage = ()=>{
                 <button onClick={logger}><span>Input Result</span> <ion-icon name="document-outline"></ion-icon></button>
                 <button onClick={logger}><span>Admin</span> <ion-icon name="person-circle-outline"></ion-icon></button>
             </div>
-
+            <a href='https://wa.me/2349038031775' className='support'>Contact Support</a>
         </div>
     )
 }

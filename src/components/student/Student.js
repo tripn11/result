@@ -57,7 +57,6 @@ const Student = () => {
                 responseType: "arraybuffer"
             });
 
-
             const pdfData = new Uint8Array(response.data);
             const pdf = await pdfjs.getDocument({ data: pdfData }).promise;
             
@@ -79,7 +78,13 @@ const Student = () => {
             const imgDataUrl = canvas.toDataURL('image/png');
             setImageUrl(imgDataUrl);
         } catch (e) {
-            setError(e.response?.data || e.message);
+            let msg;
+            if(e.response?.data && e.response.data instanceof ArrayBuffer){
+                msg = new TextDecoder().decode(e.response.data); 
+            }else{
+                msg = e.response?.data || e.message;
+            }
+            setError(msg);
         } finally {
             setLoading(false);
         }

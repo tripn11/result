@@ -66,6 +66,7 @@ const LoginPage = () => {
             />
             <button onClick={grantAccess} className="normal">Enter</button>
 
+
             <ErrorModal status={!!error} closer={()=>setError('')} error={error} />
         </div>
     )

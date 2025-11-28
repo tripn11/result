@@ -106,12 +106,13 @@ input[type='submit'] {
 /* ---------- Forms ---------- */
 input, select, textarea {
   width: 100%;
-  padding: 0.75em 1em;
+  padding:1rem;
   border: 1px solid color.scale(v.$color-primary, $lightness: 35%);
   border-radius: v.$radius;
   font-family: v.$font-secondary;
   font-size: 1rem;
   transition: v.$transition;
+  color: black;
 
   &:focus {
     outline: none;

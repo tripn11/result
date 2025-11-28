@@ -23,6 +23,7 @@
         label {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 6px;
             cursor: pointer;
 
@@ -71,7 +72,6 @@
         }
 
         input::placeholder {
-            color: v.$color-muted;
             opacity: 0.7;
         }
     }

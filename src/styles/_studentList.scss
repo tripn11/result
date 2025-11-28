@@ -35,23 +35,29 @@
         color: v.$color-primary;
     }
 
+
     ol {
+        list-style: decimal;
         padding-left: 2rem;
-        overflow-x: hidden;
-        min-height: 40vh;
+        max-width: 90%;
+        margin: 0 auto;
 
         li {
-            margin-bottom: 1rem;
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: v.$radius;
-            transition: v.$transition;
+            padding: 0.3rem 0;
+            margin-bottom: 0.7rem;
+
             font-weight: 500;
+            text-transform: capitalize;
+            color: v.$color-text;
+            cursor: pointer;
+
+            border-bottom: 1px dashed v.$color-border;
+            transition: v.$transition;
 
             &:hover {
-                background: v.$color-background;
-                color: color.scale(v.$color-primary, $lightness: -10%);
-                transform: translateX(5px);
+                color: v.$color-primary;
+                border-bottom-color: v.$color-primary;
+                transform: translateX(4px);
             }
         }
     }
@@ -111,5 +117,8 @@
     button {
         display: block;
         margin: 3rem auto;
+        font-size: 1rem;
+        width:10rem;
+        padding: 0.8rem;
     }
 }

@@ -41,7 +41,7 @@ const AdminLoginPage = () => {
         <div id="admin-login">
             <header>
                 <BackButton label="Go Home" destination="/"/>
-                <img src='/favicon/apple-touch-icon.png' alt="logo" />
+                <img src='/logo.png' alt="logo" />
             </header>
             <form onSubmit={formHandler}>
                 <h2>Login as Admin</h2>
@@ -65,13 +65,17 @@ const AdminLoginPage = () => {
                     <ion-icon 
                         name={showPassword?"eye-off-outline":"eye-outline"} 
                         onMouseDown={()=>setShowPassword(true)} 
-                        onMouseUp={()=>setShowPassword(false)}>
+                        onMouseUp={()=>setShowPassword(false)}
+                        onTouchStart={()=>setShowPassword(true)}
+                        onTouchEnd={()=>setShowPassword(false)}>
+                        
                     </ion-icon> 
                 </div>
                 <button type="submit">Login</button>
                 <ErrorModal status={!!error} closer={()=>setError("")} error={error}/>
             </form>
             <p>New to result? <Link to='/signup'>Sign up</Link></p>
+            <a href='https://wa.me/2349038031775' className='support'>Contact Support</a>
         </div>
     )
 }

@@ -75,7 +75,6 @@ const Students = () => {
             dispatch(setStudentsInSection(sectionStudents))
             dispatch(setTotalStudentsInSchool(0));
 
-            setLoading(false)
             setWarning(false);
             setSuccessMessage('All students have been promoted successfully')
             setSuccess(true);
@@ -84,11 +83,14 @@ const Students = () => {
             }, 2000);
         }catch (e) {
             setError(e.message);
+        } finally {
+            setLoading(false);
         }
     } 
 
     const codeResetter = async () => {
         try {
+            setLoading(true)
             await axios.post(host+'/students/resetCodes', {}, {
                 headers:{
                     Authorization:'Bearer '+ token
@@ -104,7 +106,6 @@ const Students = () => {
             const sectionStudents = studentData.data.students
             dispatch(setStudentsInSection(sectionStudents))
 
-            setLoading(false)
             setSuccessMessage("All codes have been reset successfully")
             setSuccess(true);
             setTimeout(() => {
@@ -112,6 +113,8 @@ const Students = () => {
             }, 2000);
         } catch (e) {
             setError(e.message);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -124,8 +127,8 @@ const Students = () => {
             <div>
                 <NavLink to="/admin/students" end>Nursery</NavLink>
                 <NavLink to="/admin/students/primary">Primary</NavLink>
-                <NavLink to="/admin/students/jss">Junior Sec</NavLink>
-                <NavLink to="/admin/students/ss">Senior Sec</NavLink>            
+                <NavLink to="/admin/students/jss">Junior Secondary</NavLink>
+                <NavLink to="/admin/students/ss">Senior Secondary</NavLink>            
             </div>
             <div><span>Total students in school:</span><span>{totalStudentsInSchool}</span></div>
             <Outlet />
