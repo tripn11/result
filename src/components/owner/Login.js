@@ -28,14 +28,17 @@ const OwnerLogin = () => {
 
     if (loading) return <Loading />;
     return (
-        <div>
-            <input 
-                type="password"
-                value={passCode}
-                onChange={(e) => setPassCode(e.target.value)}
-            />
+        <div id='owner-login'>
+            <div>
+                <input 
+                    type="password"
+                    value={passCode}
+                    onChange={(e) => setPassCode(e.target.value)}
+                />
 
-            <button onClick={verificator}>Submit</button>
+                <button onClick={verificator}>Submit</button>
+            </div>
+
             <ErrorModal status={!!error} closer={()=>setError('')} error={error} />
         </div>
     )

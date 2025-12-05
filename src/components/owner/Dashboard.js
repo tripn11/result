@@ -4,6 +4,7 @@ import axios from 'axios';
 import Loading from '../Loading';
 import ErrorModal from '../modals/ErrorModal';
 import SuccessModal from '../modals/SuccessModal';
+import WarningModal from '../modals/WarningModal';
 import { setAuthState } from "../../reducers/authReducer";
 
 
@@ -13,6 +14,7 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+    const [warning, setWarning] = useState({status:false, schoolId:''});
     const [mySchools, setMySchools] = useState({});
     const [updatedSchools, setUpdatedSchools] = useState({});
     const [checkAll, setCheckAll] = useState(false);
@@ -22,9 +24,10 @@ const Dashboard = () => {
         const temp = {};
         schools.forEach(school => {
             temp[school.name] = school;
-        })
+        });
         setMySchools(temp);
-    },[schools])
+    }, [schools]);
+
 
     const handler = e => {
         if(e.target.name==='checkAll') {
@@ -64,12 +67,34 @@ const Dashboard = () => {
             await axios.patch(host+'/overallSchools',updatedSchools, {
                 headers: {'Authorization': `Bearer ${token}`}
             })
+            dispatch(setAuthState({schools: Object.values(mySchools)}))
+            setLoading(false);
             setSuccess(true);
             setTimeout(()=>setSuccess(false),2000);
         }catch (e) {
-            setError(e.response ? e.response.data : e.message);
-        } finally {
             setLoading(false);
+            setError(e.response ? e.response.data : e.message);
+        }
+    }
+
+    const schoolDeleter = async () => {
+        try {
+            setLoading(true);
+            await axios.delete(host+`/schools/${warning.schoolId}`, {
+                headers: {'Authorization': `Bearer ${token}`}
+            })
+            const updatedSchools = schools.filter(sch=>sch._id !== warning.schoolId)
+            dispatch(setAuthState({schools:updatedSchools}))
+
+            setWarning({status:false, schoolId:''});
+            setLoading(false);
+            setSuccess(true);
+            setTimeout(()=>setSuccess(false),2000);
+        }catch (e) {
+            console.log(e);
+            setWarning({status:false, schoolId:''});
+            setLoading(false);
+            setError(e.response ? e.response.data : e.message);
         }
     }
 
@@ -97,6 +122,7 @@ const Dashboard = () => {
                     <span>Schools</span>
                     <span>Phone Number</span>
                     <span>Population</span>
+                    <span>Action</span>
                     <span>Approved</span>
                 </li>
                 {schools
@@ -107,6 +133,7 @@ const Dashboard = () => {
                             <span>{school.name}</span>
                             <span>{school.phoneNumber}</span>
                             <span>{school.population}</span>
+                            <button onClick={()=>setWarning({status:true, schoolId: school._id})}>Delete</button>
                             <input 
                                 type='checkbox' 
                                 checked= {mySchools[school.name]?.approved || false} 
@@ -124,6 +151,12 @@ const Dashboard = () => {
 
             <ErrorModal status={!!error} closer={()=>setError('')} error={error} />
             <SuccessModal status={success} message="Updated Successfully" />
+            <WarningModal 
+                status={warning.status} 
+                closer={()=>setWarning({status:false, schoolId:''})}
+                confirmer={schoolDeleter}
+                message="Are you sure you want to delete this school? This action is irreversible." 
+            />
         </div>
     )
 }

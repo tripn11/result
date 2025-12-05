@@ -1,3 +1,28 @@
+#owner-login {
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    width:100%;
+    height:100vh;
+
+    >div {
+        display: flex;
+        flex-direction: column;
+        height: 50vh;
+        width: 50vw;
+        align-items:center;
+        justify-content: center;
+
+        >button {
+            width: 30%;
+            padding:0.8rem;
+            margin-top: 1rem;
+        }
+    }
+
+
+}
+
 #owner {
     h1 {
         margin-left: 2rem;
@@ -31,7 +56,7 @@
             width: 80%;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 15% 40% 15% 15% 15%;
+            grid-template-columns: 12% 40% 12% 12% 12% 12%;
             padding: 1rem 0;
             border-bottom: 1px solid gainsboro;
 
@@ -55,6 +80,11 @@
                 &:focus {
                     box-shadow:none;
                 }
+            }
+
+            button {
+                background-color: red;
+                width:fit-content;
             }
         }
     }
