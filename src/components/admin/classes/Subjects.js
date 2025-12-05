@@ -9,11 +9,12 @@ const Subjects = props => {
         },[props.subject])
 
     const changeHandler = e => {
+        if (e.target.value.includes("-")) return;
         setSubj(e.target.value)
     }
 
     const updater = () => {
-        props.updater(subj+"-"+code,"subjects",code)
+        props.updater(subj.toLowerCase()+"-"+code,"subjects",code)
     }
 
     const remover = () => {

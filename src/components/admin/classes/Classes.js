@@ -5,13 +5,15 @@ import axios from "axios";
 import Loading from "../../Loading.js";
 import SuccessModal from "../../modals/SuccessModal.js";
 import ErrorModal from "../../modals/ErrorModal.js";
-import { setAuthState } from "../../../reducers/authReducer.js";
+import { setAuthState, setModifiedClassNames } from "../../../reducers/authReducer.js";
 
 const Classes = () => {
     const [loading,setLoading] = useState(false)
     const token = useSelector(state=>state.auth.token)
     const classes = useSelector(state=>state.school.classes)
     const isModified = useSelector(state=>state.auth.classesIsModified)
+    const modifiedClassNames = useSelector(state=>state.auth.modifiedClassNames)
+    const [duplicateClasses, setDuplicateClasses] = useState(false);
     const host = process.env.REACT_APP_HOST
     const [successModal, setSuccessModal]= useState(false)
     const [errorModal, setErrorModal] = useState(false)
@@ -60,6 +62,18 @@ const Classes = () => {
             document.removeEventListener("click", handleLinkClick, true);
         };
     }, [isModified]);
+
+    useEffect(()=>{
+        const allClasses = Object.values(classes)
+            .flatMap(section => section.classes || [])          
+            .map(item => item.class); 
+        const hasDuplicate = new Set(allClasses).size !== allClasses.length;
+        if(hasDuplicate) {
+            setDuplicateClasses(true);
+        } else {
+            setDuplicateClasses(false);
+        }
+    }, [classes])
     
     const classesSaver = async () => {
         try{
@@ -74,11 +88,13 @@ const Classes = () => {
                         throw new Error(
                             `A Class name is missing in ${sectionKey} section.`
                         );
-                    }
+                    }else if(duplicateClasses) {
+                        throw new Error("Two classes cannot have the same name")
+                    } 
                 });
 
                 // CASE 2: validate grading
-                (section.grading || []).forEach((grade) => {
+                (section.grading || []).forEach(grade => {
                     const parts = grade.split("-");
                     if (parts.some(p => p.trim() === "")) {
                         throw new Error(
@@ -86,6 +102,24 @@ const Classes = () => {
                         );
                     }
                 });
+
+                const gradingNames = (section.grading || []).map(grade => grade.split("-")[0].trim());
+                const hasDuplicate = new Set(gradingNames).size !== gradingNames.length;
+                if (hasDuplicate) {
+                    throw new Error(
+                        `Duplicate grading names found in ${sectionKey} section.`
+                    );
+                }
+
+                const total = (section.grading || [])
+                    .map(grade => Number(grade.split("-")[1].trim()))
+                    .reduce((acc, curr) => acc + curr, 0);
+
+                if (total > 100) {
+                    throw new Error(
+                        `The total grading scale must not be above 100 in ${sectionKey} section.`
+                    );
+                }
 
                 // CASE 3: validate subject name
                 (section.subjects || []).forEach((sub) => {
@@ -96,18 +130,28 @@ const Classes = () => {
                         );
                     }
                 });
+
+                const subjectNames = (section.subjects || []).map(sub => sub.split("-")[0].trim());
+                const hasDuplicateSubjects = new Set(subjectNames).size !== subjectNames.length;
+                if (hasDuplicateSubjects) {
+                    throw new Error(
+                        `Duplicate subject names found in ${sectionKey} section.`
+                    );
+                }
             });
 
             await axios.patch(host+'/schools',{classes}, {
                 headers: {
-                    Authorization:'Bearer '+ token
+                    Authorization:'Bearer '+ token,
+                    modifiedClassNames: JSON.stringify(modifiedClassNames)
                 }
             })
+
+            dispatch(setAuthState({classesIsModified:false}))
+            dispatch(setModifiedClassNames())
             setLoading(false)
             setSuccessModal(true)
-            dispatch(setAuthState({classesIsModified:false}))
             setTimeout(()=>setSuccessModal(false),1500)
-
         }catch (e) {
             setLoading(false)
             setErrorModal(true)

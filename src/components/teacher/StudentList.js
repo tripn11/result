@@ -13,7 +13,8 @@ const StudentList = () => {
     const students = useSelector(state => state.students.studentsInClass);
     const totalStudents = useSelector(state => state.students.totalStudentsInClass);
     const accessCode = useSelector(state => state.auth.token);
-    const { teachersTitle, teachersName, className, schoolName } = useSelector(state => state.results.classDetails);
+    const { teachersTitle, teachersName, className } = useSelector(state => state.results.results[0] || {});
+    const { schoolName } = useSelector(state => state.school.name);
     const dispatch = useDispatch();
     const host = process.env.REACT_APP_HOST;
 
@@ -78,7 +79,7 @@ const StudentList = () => {
             <span className='teacher-welcome'>
                 Welcome, {teachersTitle} {teachersName}
             </span>
-            <p>Class: {className}</p>
+            <p>Class: <span>{className}</span></p>
 
             <h3>Student List</h3>
 

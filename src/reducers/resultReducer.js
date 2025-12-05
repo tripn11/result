@@ -2,13 +2,6 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
     results: [],
-    classDetails: {
-        teachersTitle:'',
-        teachersName: '',
-        className: '',
-        timesSchoolOpened:'',
-        schoolName:'',
-    }
 }
 
 const resultSlice = createSlice({
@@ -17,9 +10,6 @@ const resultSlice = createSlice({
     reducers: {
         setResults(state, action) {
             state.results = action.payload;
-        },
-        setClassDetails(state, action) {
-            state.classDetails = action.payload;
         },
         updateResult(state, action) {
             const { id, result } = action.payload;
@@ -31,5 +21,5 @@ const resultSlice = createSlice({
     }
 })
 
-export const { setResults, setClassDetails, updateResult } = resultSlice.actions;
+export const { setResults, updateResult } = resultSlice.actions;
 export default resultSlice.reducer;

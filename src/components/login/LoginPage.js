@@ -6,7 +6,8 @@ import axios from 'axios';
 import Loading from '../Loading';
 import ErrorModal from '../modals/ErrorModal';
 import { setAuthState } from '../../reducers/authReducer';
-import { setResults, setClassDetails } from '../../reducers/resultReducer';
+import { setResults } from '../../reducers/resultReducer';
+import { setBasics } from '../../reducers/schoolReducer';
 import { setStudentsInClass, setTotalStudentsInClass, setStudent } from "../../reducers/studentsReducer";
 
 const LoginPage = () => {
@@ -26,14 +27,11 @@ const LoginPage = () => {
                         'Authorization': `Bearer ${accessCode}`
                     }
                 })
+                console.log(response.data)
                 dispatch(setStudentsInClass(response.data.students));
                 dispatch(setResults(response.data.results));
-                dispatch(setClassDetails({
-                    teachersTitle: response.data.teachersTitle,
-                    teachersName: response.data.teachersName,
-                    className: response.data.teachersClass,
-                    timesSchoolOpened:response.data.timesSchoolOpened,
-                    schoolName: response.data.schoolName,
+                dispatch(setBasics({
+                    name: response.data.schoolName,
                 }));
                 dispatch(setTotalStudentsInClass(response.data.totalStudentsInClass));
             } else if(role==='student') {

@@ -1,21 +1,34 @@
 import {useState} from "react";
+import { useDispatch } from "react-redux";
 import codeGenerator from "../../../utilities/codeGenerator"; 
+import { setModifiedClassNames } from "../../../reducers/authReducer";
 
 const Class = props => {
     const [eachClass, setEachClass] = useState({
         code:props.details.code,
         class:props.details.class||'',
         teachersTitle:props.details.teachersTitle||'',
-        teachersName:props.details.teachersName||''
+        teachersName:props.details.teachersName||'',
+        _id:props.details._id
     })
     const [copied, setCopied] = useState(false)
+    const dispatch = useDispatch();
 
     const handler = e => {
         setEachClass({...eachClass,[e.target.name]:e.target.value})
     }
 
     const updater = () => {
-        props.updater(eachClass,'classes',eachClass.code)
+        const newClass = eachClass.class.toLowerCase();
+        if(props.details.class !== newClass) {
+            dispatch(setModifiedClassNames({
+                    formerName:props.details.class, 
+                    newName:newClass
+                }
+            ))
+        }
+
+        props.updater({...eachClass,class:newClass},'classes',eachClass.code)
     }
 
     const remover = () => {
@@ -30,7 +43,7 @@ const Class = props => {
 
     const copier = async () => {
         try {
-            await navigator.clipboard.writeText(eachClass.code+"-"+eachClass.class)
+            await navigator.clipboard.writeText(eachClass.code+"-"+eachClass.class.toLowerCase())
             setCopied(true)
             setTimeout(() => setCopied(false), 2000)
         }catch(err) {

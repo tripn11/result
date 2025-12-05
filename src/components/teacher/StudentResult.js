@@ -26,12 +26,10 @@ const StudentResult = () => {
   const host = process.env.REACT_APP_HOST
   const result = useSelector(state => state.results.results.find(r => r.owner === id));
   const student = useSelector(state => state.students.studentsInClass.find(st => st._id === id));
-  const classDetails = useSelector(state => state.results.classDetails)
   const accessCode = useSelector(state => state.auth.token);
   const totalStudents = useSelector(state => state.students.totalStudentsInClass);
 
   const dispatch = useDispatch();
-
   const [subjects, setSubjects] = useState(result?.subjects || {});
   const [comments, setComments] = useState({
     teachers: result.teachersComment || '',
@@ -87,9 +85,6 @@ const StudentResult = () => {
       attendance: comments.attendance,
       teachersComment: comments.teachers,
       principalsComment: comments.principals,
-      timesSchoolOpened: classDetails.timesSchoolOpened,
-      teachersName:classDetails.teachersName,
-      teachersTitle:classDetails.teachersTitle
     }
 
     try{

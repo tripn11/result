@@ -5,7 +5,7 @@ import ClassStudentsList from "./ClassStudentsList.js";
 
 const ClassList = props => {
     const [listOpen, setListOpen] = useState(false)
-    const [studentModal, setStudentModal] = useState(false)    
+    const [studentModal, setStudentModal] = useState(false)  
     
     const listShower = () => {
         if(listOpen) {

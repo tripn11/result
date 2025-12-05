@@ -29,8 +29,8 @@ const SignupPage = ()=> {
             await axios.post(host+'/schools', school);
             setLoading(false)
             setSuccess(true)
-            setTimeout(()=>{setSuccess(false)}, 5000);
-            setTimeout(()=>navigate("/login"),5000);
+            setTimeout(()=>{setSuccess(false)}, 10000);
+            setTimeout(()=>navigate("/login"),10000);
         } catch (e) {
             setLoading(false)
             setError(e.response?.data?.error || {message:e.response?.data || e.message})

@@ -9,6 +9,10 @@ const Grade = props => {
     },[props.grade])
     
     const handler = e => {
+        if(e.target.name === "scale") {
+            const valid =  /^[1-9][0-9]?$/.test(e.target.value) || e.target.value === "";
+            if(!valid) return;    
+        }
         const {name,value} = e.target
         setGrading({
             ...grading,
@@ -17,7 +21,8 @@ const Grade = props => {
     }
 
     const updater = () => {
-        const grade=grading.name+"-"+grading.scale+"-"+code;
+        const newGradeName = grading.name.trim().toLowerCase();
+        const grade=newGradeName+"-"+grading.scale+"-"+code;
         props.updater(grade,'grading',code)
     }
 
